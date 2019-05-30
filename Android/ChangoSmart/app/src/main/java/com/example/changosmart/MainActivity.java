@@ -1,5 +1,7 @@
 package com.example.changosmart;
 
+import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,7 +11,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.net.Inet4Address;
+
 public class MainActivity extends AppCompatActivity {
+    public static MyAppDatabase myAppDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // INICIALIZO LA BASE
+        // HAY QUE CREAR UN HILO PARA QUE NO TRABAJE EN EL HILO PRINCIPAL
+        myAppDatabase = Room.databaseBuilder(this.getApplicationContext(), MyAppDatabase.class, "db").allowMainThreadQueries().build();
+
     }
 
     @Override
@@ -48,5 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendMessage (View view){
+        Intent openMisListas = new Intent(this, MisListas.class);
+        startActivity(openMisListas);
     }
 }

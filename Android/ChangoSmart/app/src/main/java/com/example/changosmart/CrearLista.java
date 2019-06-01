@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import BD.ListaCompraE;
+
 public class CrearLista extends AppCompatActivity {
     private EditText etNombreLista,
                      etSupermercado;
@@ -30,22 +32,23 @@ public class CrearLista extends AppCompatActivity {
                 String nombreLista = etNombreLista.getText().toString();
                 String supermercado= etSupermercado.getText().toString();
 
-                // Creo el objeto que se guardara en la base ........
-                ListaCompraE listaCompra = new ListaCompraE(nombreLista, supermercado);
-
-                // Limpio los editText
-                etNombreLista.setText("");
-                etSupermercado.setText("");
-
-                // Inserto en la base el objeto creado
-                MainActivity.myAppDatabase.myDao().addLista(listaCompra);
-
-                // Muestro mensaje
-                Toast.makeText(view.getContext(),"Lista Creada",Toast.LENGTH_SHORT).show();
-
+                if( nombreLista.isEmpty()) {
+                    // Muestro mensaje
+                    Toast.makeText(view.getContext(), "Ingrese un nombre de Lista", Toast.LENGTH_SHORT).show();
+                    etNombreLista.requestFocus();
+                }else {
+                    // Creo el objeto que se guardara en la base ........
+                    ListaCompraE listaCompra = new ListaCompraE(nombreLista, supermercado);
+                    // Limpio los editText
+                    etNombreLista.setText("");
+                    etSupermercado.setText("");
+                    // Inserto en la base el objeto creado
+                    MainActivity.myAppDatabase.myDao().addLista(listaCompra);
+                    // Muestro mensaje
+                    Toast.makeText(view.getContext(),"Lista Creada",Toast.LENGTH_SHORT).show();
+                }
             }
           }
-
         );
     }
 }

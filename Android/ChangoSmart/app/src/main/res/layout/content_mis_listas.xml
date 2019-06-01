@@ -8,55 +8,61 @@
     tools:context=".MisListas"
     tools:showIn="@layout/activity_mis_listas">
 
-    <TableRow
-        android:id="@+id/tableRow"
-        android:layout_width="397dp"
-        android:layout_height="404dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="177dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/textView"
-        android:layout_width="395dp"
-        android:layout_height="49dp"
+        android:layout_width="361dp"
+        android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="20dp"
         android:text="Mis Listas de Compra"
         android:textAllCaps="true"
-        app:layout_constraintBottom_toTopOf="@+id/tableRow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonCrearLista"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginLeft="161dp"
-        android:layout_marginTop="515dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginRight="162dp"
-        android:layout_marginBottom="112dp"
         android:layout_gravity="bottom|end"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="48dp"
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:layout_width="400dp"
+        android:layout_height="490dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCrearLista"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <ListView
+            android:id="@+id/listViewMisListas"
+            android:layout_width="394dp"
+            android:layout_height="490dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp" />
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

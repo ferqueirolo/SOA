@@ -1,7 +1,8 @@
-package com.example.changosmart;
+package BD;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
 
 /**
  * Clase para conectarse a la BD ROOM
@@ -11,4 +12,6 @@ public interface MyDao {
     // Firma de metodo para insertar Listas de Compras en la base ROOM
     @Insert
     public void  addLista(ListaCompraE lista);
+
+
 }

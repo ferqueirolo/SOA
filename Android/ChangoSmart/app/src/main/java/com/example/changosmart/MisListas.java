@@ -9,11 +9,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
-public class MisListas extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.LinkedList;
 
+import BD.ListaCompraE;
+import BD.MyAdaptador;
+
+public class MisListas extends AppCompatActivity {
+    private ListView listaComprasView;
+    private ArrayList<ListaCompraE> misListasCompras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +31,16 @@ public class MisListas extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Almaceno el contexto de la actividad
 
+        misListasCompras = new ArrayList<ListaCompraE>();
+        // Inicio las listas para caso de prueba
+        iniciarLista();
 
+        listaComprasView = (ListView) findViewById(R.id.listViewMisListas);
+
+        listaComprasView.setAdapter(new MyAdaptador(this, misListasCompras));
+
+        //Creamos un Adaptador para mostrarlo por la vista
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +60,12 @@ public class MisListas extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    private void iniciarLista(){
+        this.misListasCompras.add(new ListaCompraE("Pepe 1", "Dia"));
+        this.misListasCompras.add(new ListaCompraE("Salado", ""));
+        this.misListasCompras.add(new ListaCompraE("Fiesta Loca", "Coto"));
     }
 
 }

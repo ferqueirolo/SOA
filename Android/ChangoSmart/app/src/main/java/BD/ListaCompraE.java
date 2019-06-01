@@ -1,10 +1,12 @@
-package com.example.changosmart;
+package BD;
 
 
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,12 +25,12 @@ public class ListaCompraE {
 
     private String nombre_Lista;
     private String supermercado;
-    //private Date fecha_Actualizacion;
+    private String fecha_Actualizacion;
 
     public ListaCompraE (String nombre_Lista, String supermercado){
         this.nombre_Lista = nombre_Lista;
         this.supermercado = supermercado;
-        //this.fecha_Actualizacion = Calendar.getInstance().getTime();
+        this.fecha_Actualizacion = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
     }
 
     // SETTERS
@@ -43,28 +45,24 @@ public class ListaCompraE {
     public void setID(int ID) {
         this.ID = ID;
     }
-    /*
-    public void setFecha_Actualizacion(Date fecha_Actualizacion) {
-        this.fecha_Actualizacion = fecha_Actualizacion;
-    }
-    */
+
+    public void setFecha_Actualizacion(String fecha_actualizacion) { this.fecha_Actualizacion = fecha_Actualizacion; }
+
     // GETTERS
     public String getNombre_Lista() {
         return nombre_Lista;
     }
 
-    /*
-    public Date getFecha_Actualizacion() {
-        return fecha_Actualizacion;
-    }
-    */
-    public String getSupermercado() {
-        return supermercado;
-    }
+    public String getFecha_Actualizacion() { return fecha_Actualizacion; }
 
-    public int getID() {
-        return ID;
-    }
+    public String getSupermercado() { return supermercado; }
 
+    public int getID() { return ID; }
+
+
+    // METODOS
+    public void actualizarFechaActualizacion(){
+        this.fecha_Actualizacion = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
+    }
 
 }

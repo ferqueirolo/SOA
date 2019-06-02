@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#CDFACD">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="50dp" />
+        app:layout_constraintGuide_begin="66dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -25,8 +26,11 @@
         android:layout_height="23dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:text="Nombre_Producto"
+        android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -35,29 +39,34 @@
 
     <TextView
         android:id="@+id/textViewCategoriaProducto"
-        android:layout_width="237dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginLeft="44dp"
-        android:layout_marginTop="4dp"
-        android:text="TextView"
+        android:layout_width="136dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/badgeColor"
+        android:gravity="center|start"
+        android:text="Categoria_Producto"
+        android:textColor="#FFFFFF"
+        android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/textViewListaCompra"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNombreProducto"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textViewPrecioProducto"
         android:layout_width="77dp"
         android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:gravity="center"
+        android:text="Precio"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.233" />
+        app:layout_constraintVertical_bias="0.763" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"

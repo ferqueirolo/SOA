@@ -18,12 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.0027359782" />
+        app:layout_constraintGuide_percent="0.0" />
 
     <TextView
         android:id="@+id/textViewListaCompra"
-        android:layout_width="290dp"
-        android:layout_height="23dp"
+        android:layout_width="269dp"
+        android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -34,18 +34,20 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/textViewFechaActualizacion"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.185" />
+        app:layout_constraintVertical_bias="0.173" />
 
     <TextView
         android:id="@+id/textViewSupermercado"
         android:layout_width="114dp"
         android:layout_height="19dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:layout_marginTop="12dp"
         android:background="@color/badgeColor"
+        android:gravity="center"
         android:text="Supermercado"
         android:textColor="#FFFFFF"
         android:textStyle="italic"
@@ -56,8 +58,8 @@
         android:id="@+id/textViewFechaActualizacion"
         android:layout_width="77dp"
         android:layout_height="20dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="Fecha_Act"
@@ -65,28 +67,28 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.169" />
+        app:layout_constraintVertical_bias="0.166" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.04" />
+        app:layout_constraintGuide_percent="0.08" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="20dp"
         android:layout_height="21dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginRight="52dp"
         android:background="@drawable/list_button_bg"
         android:foreground="@drawable/settings"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewFechaActualizacion"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.707" />/>
+        app:layout_constraintVertical_bias="0.674" />/>
 
 </android.support.constraint.ConstraintLayout>

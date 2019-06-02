@@ -1,28 +1,23 @@
-package com.example.changosmart;
+package com.example.changosmart.listasCompras;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import com.example.changosmart.MainActivity;
+import com.example.changosmart.R;
 
-import BD.ListaCompraE;
-import BD.MyAdaptador;
+import java.util.ArrayList;
 
 public class MisListas extends AppCompatActivity {
-    private ListView listaComprasView;
-    private ArrayList<ListaCompraE> misListasCompras;
+    private ArrayList<ListaCompra> misListasCompras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +27,18 @@ public class MisListas extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        misListasCompras = new ArrayList<ListaCompraE>();
+        misListasCompras = new ArrayList<ListaCompra>();
+
         // Inicio las listas para caso de prueba
-        iniciarLista();
+        // Devuelve interface LIST, por eso lo casteo a ArrayList
+        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
 
-        listaComprasView = (ListView) findViewById(R.id.listViewMisListas);
-
-        listaComprasView.setAdapter(new MyAdaptador(this, misListasCompras));
+        ListView listaComprasView = (ListView) findViewById(R.id.listViewMisListas);
 
         //Creamos un Adaptador para mostrarlo por la vista
+        listaComprasView.setAdapter(new MiAdaptadorListaCompras(this, misListasCompras));
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,10 +60,13 @@ public class MisListas extends AppCompatActivity {
         );
     }
 
-    private void iniciarLista(){
-        this.misListasCompras.add(new ListaCompraE("Pepe 1", "Dia"));
-        this.misListasCompras.add(new ListaCompraE("Salado", ""));
-        this.misListasCompras.add(new ListaCompraE("Fiesta Loca", "Coto"));
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Devuelve interface LIST, por eso lo casteo a ArrayList
+        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+
     }
 
 }

@@ -1,4 +1,4 @@
-package BD;
+package com.example.changosmart.productos;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,22 +8,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.changosmart.Producto;
 import com.example.changosmart.R;
+import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
 
-public class MyAdaptador extends BaseAdapter {
+public class MiAdaptadorListaProductos extends BaseAdapter {
     private Context contexto;
-    private ArrayList<ListaCompraE> listaListaCompra;
+    private ArrayList<Producto> listaProductos;
 
     // Sirve para instanciar el xml
     private static LayoutInflater inflater = null;
 
     /** CONSTRUCTOR       ***************************************************/
-    public MyAdaptador(Context contexto, ArrayList<ListaCompraE> listaListaCompra) {
+    public MiAdaptadorListaProductos(Context contexto, ArrayList<Producto> listaProductos) {
         this.contexto = contexto;
-        this.listaListaCompra = listaListaCompra;
+        this.listaProductos = listaProductos;
 
         inflater = (LayoutInflater)contexto.getSystemService(contexto.LAYOUT_INFLATER_SERVICE);
     }
@@ -38,12 +38,12 @@ public class MyAdaptador extends BaseAdapter {
         this.contexto = contexto;
     }
 
-    public ArrayList<ListaCompraE> getListaProductos() {
-        return listaListaCompra;
+    public ArrayList<Producto> getListaProductos() {
+        return listaProductos;
     }
 
-    public void setListaProductos(ArrayList<ListaCompraE> listaProductos) {
-        this.listaListaCompra = listaProductos;
+    public void setListaProductos(ArrayList<Producto> listaProductos) {
+        this.listaProductos = listaProductos;
     }
     /************************************************************************/
 
@@ -54,21 +54,22 @@ public class MyAdaptador extends BaseAdapter {
         final View myView = inflater.inflate(R.layout.item_lista_lista_compra, null);
 
         // Tomo los campos del xml donde voy a mostrar los datos
-        TextView nombreLista        = (TextView) myView.findViewById(R.id.textViewListaCompra);
-        TextView supermercado       = (TextView) myView.findViewById(R.id.textViewSupermercado);
-        TextView fechaActualizacion = (TextView) myView.findViewById(R.id.textViewFechaActualizacion);
+        TextView tv_nombreProducto      = (TextView) myView.findViewById(R.id.textViewNombreProducto);
+        TextView tv_categoriaProducto   = (TextView) myView.findViewById(R.id.textViewCategoriaProducto);
+        TextView tv_precioProducto      = (TextView) myView.findViewById(R.id.textViewPrecioProducto);
+
 
         // Populo los datos de los campos del xml
-        nombreLista.setText(listaListaCompra.get(i).getNombre_Lista());
-        supermercado.setText(listaListaCompra.get(i).getSupermercado());
-        fechaActualizacion.setText(listaListaCompra.get(i).getFecha_Actualizacion());
+        tv_nombreProducto.setText(listaProductos.get(i).getNombre());
+        tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
+        tv_precioProducto.setText(listaProductos.get(i).getPrecio());
 
         // Una accion si tocan en el nombre de la lista
-        nombreLista.setOnClickListener(new View.OnClickListener() {
+        myView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Muestro mensaje
-                Toast.makeText(v.getContext(),"QUE ME TOCAS GATOO ?",Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(),"A - A - A",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -77,12 +78,12 @@ public class MyAdaptador extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return listaListaCompra.size();
+        return listaProductos.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return listaListaCompra.get(position);
+        return listaProductos.get(position);
     }
 
     @Override

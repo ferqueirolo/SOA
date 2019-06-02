@@ -1,5 +1,7 @@
-package com.example.changosmart;
+package com.example.changosmart.listasCompras;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import BD.ListaCompraE;
+import com.example.changosmart.MainActivity;
+import com.example.changosmart.R;
+
+import java.sql.SQLDataException;
+
+import BD.ListaCompraTabla;
 
 public class CrearLista extends AppCompatActivity {
     private EditText etNombreLista,
@@ -38,14 +45,29 @@ public class CrearLista extends AppCompatActivity {
                     etNombreLista.requestFocus();
                 }else {
                     // Creo el objeto que se guardara en la base ........
-                    ListaCompraE listaCompra = new ListaCompraE(nombreLista, supermercado);
+                    ListaCompraTabla listaCompra = new ListaCompraTabla(nombreLista, supermercado);
+
                     // Limpio los editText
                     etNombreLista.setText("");
                     etSupermercado.setText("");
-                    // Inserto en la base el objeto creado
-                    MainActivity.myAppDatabase.myDao().addLista(listaCompra);
-                    // Muestro mensaje
-                    Toast.makeText(view.getContext(),"Lista Creada",Toast.LENGTH_SHORT).show();
+
+                    try {
+                        // Inserto en la base el objeto creado
+                        MainActivity.myAppDatabase.myDao().addLista(listaCompra);
+
+                        // Muestro mensaje de Lista Creada
+                        Toast.makeText(view.getContext(), "Lista Creada", Toast.LENGTH_SHORT).show();
+
+                        Intent intentMisListas = new Intent(view.getContext(), MisListas.class);
+                        intentMisListas.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intentMisListas);
+
+                        // Eliminamos la actividad actual para que no quede viva
+                        finish();
+
+                    }catch(SQLiteException e){
+                        Toast.makeText(view.getContext(),"Esta lista ya se encuentra creada para este supermecado.",Toast.LENGTH_SHORT).show();
+                    };
                 }
             }
           }

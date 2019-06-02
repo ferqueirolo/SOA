@@ -9,9 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CrearLista"></activity>
         <activity
-            android:name=".MisListas"
+            android:name=".productos.AnadirProducto"
+            android:label="@string/title_activity_anadir_producto"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".listasCompras.CrearLista" />
+        <activity
+            android:name=".listasCompras.MisListas"
             android:label="@string/title_activity_mis_listas"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

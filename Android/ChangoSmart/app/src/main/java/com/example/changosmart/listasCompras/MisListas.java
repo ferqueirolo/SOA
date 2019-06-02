@@ -38,23 +38,13 @@ public class MisListas extends AppCompatActivity {
         //Creamos un Adaptador para mostrarlo por la vista
         listaComprasView.setAdapter(new MiAdaptadorListaCompras(this, misListasCompras));
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         Button buttonCrearLista = (Button) findViewById(R.id.buttonCrearLista);
         buttonCrearLista.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent newActivity = new Intent(view.getContext(),CrearLista.class);
-                        startActivity(newActivity);
+                        startActivityForResult(newActivity, 1);
                     }
                 }
         );
@@ -66,7 +56,16 @@ public class MisListas extends AppCompatActivity {
 
         // Devuelve interface LIST, por eso lo casteo a ArrayList
         misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            Intent refreshActivity = new Intent(this, MisListas.class);
+            startActivity(refreshActivity);
+            this.finish();
+        }
     }
 
 }

@@ -63,6 +63,7 @@ public class CrearLista extends AppCompatActivity {
                         startActivity(intentMisListas);
 
                         // Eliminamos la actividad actual para que no quede viva
+                        setResult(RESULT_OK, null);
                         finish();
 
                     }catch(SQLiteException e){

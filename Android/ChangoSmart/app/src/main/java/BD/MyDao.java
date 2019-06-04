@@ -1,14 +1,12 @@
 package BD;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.example.changosmart.listasCompras.ListaCompra;
 import com.example.changosmart.productos.Producto;
-
 
 import java.util.List;
 
@@ -21,10 +19,10 @@ public interface MyDao {
     @Insert(onConflict = OnConflictStrategy.FAIL)
     public void  addLista(ListaCompraTabla lista);
 
-    @Query("SELECT nombre_lista, supermercado, fecha_actualizacion FROM Lista_Compras")
+    @Query("SELECT nombre_lista, supermercado, fecha_actualizacion FROM Lista_Compras ORDER BY fecha_actualizacion DESC")
     public List<ListaCompra> getListaCompras();
 
-    @Query("SELECT nombre, categoria, precio FROM Productos")
+    @Query("SELECT nombre, categoria, precio FROM Productos ORDER BY Nombre")
     public  List<Producto> getProductos();
 
     @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")

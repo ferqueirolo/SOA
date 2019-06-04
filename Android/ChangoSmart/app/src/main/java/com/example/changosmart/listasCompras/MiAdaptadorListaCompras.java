@@ -15,8 +15,6 @@ import com.example.changosmart.R;
 
 import java.util.ArrayList;
 
-import BD.MyAppDatabase;
-
 public class MiAdaptadorListaCompras extends BaseAdapter {
     private Context contexto;
     private ArrayList<ListaCompra> listaListaCompra;
@@ -53,7 +51,7 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
 
 
     @Override
-    public View getView(final int i, View convertView, ViewGroup parent) {
+    public View getView(final int i, final View convertView, ViewGroup parent) {
         // Vista que voy a retornar
         final View myView = inflater.inflate(R.layout.item_lista_lista_compra, null);
 
@@ -72,36 +70,27 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
         // Una accion si tocan en el nombre de la lista
         myView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                Toast.makeText(v.getContext(),"A - A - A",Toast.LENGTH_SHORT).show();
-
+            public void onClick(final View vistaFila) {
                 // Muestro mensaje
-                AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
+                final AlertDialog.Builder opcionesListaCompra = new AlertDialog.Builder(vistaFila.getContext());
 
-                builder.setMessage(R.string.title_alert_dialog_lista)
-                       .setTitle("")
-                        .setItems(R.array.tresOpcionesAlertDialog, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Opcion 1 -> Iniciar Compra
-                                // Opcion 2 -> Editar Lista
-                                // Opcion 3 -> Eliminar Lista
-                                switch (which){
-                                // Eliminar Lista
-                                case 2:
-                                    MainActivity.myAppDatabase.myDao().deleteLista(
-                                                            listaListaCompra.get(i).getNombre_lista(),
-                                                            listaListaCompra.get(i).getSupermercado()
-                                                            );
-                                break;
-                                }
-                            }
-                        });
+                opcionesListaCompra.setTitle(R.string.title_alert_dialog_lista)
+                                    .setItems(R.array.tresOpcionesAlertDialog, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // Opcion 1 -> Iniciar Compra
+                                            // Opcion 2 -> Editar Lista
+                                            // Opcion 3 -> Eliminar Lista
+                                            switch (which){
+                                            case 2: // Eliminar Lista
+                                                eliminarListaCompra(vistaFila, i);
+                                                Toast.makeText(vistaFila.getContext(),"Lista eliminada", Toast.LENGTH_LONG);
 
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
+                                            break;
+                                            }
+                                        }
+                                    });
+                opcionesListaCompra.show();
             }
         });
 
@@ -123,5 +112,26 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
         return 0;
     }
 
+    private void eliminarListaCompra(final View view, final int pos ){
+        AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
 
+        builder.setTitle("Confirmar Accion")
+                .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.myAppDatabase.myDao().deleteLista(
+                                listaListaCompra.get(pos).getNombre_lista(),
+                                listaListaCompra.get(pos).getSupermercado()
+                        );
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
+
+    }
 }

@@ -14,8 +14,8 @@ import java.util.Calendar;
  * Se emplea usando ROOM library
  */
 
-@Entity(tableName = "Lista_Compras", primaryKeys ={"nombre_lista", "supermercado"})
-public class ListaCompraTabla {
+@Entity(tableName = "Mis_Listas_Compras", primaryKeys ={"nombre_lista", "supermercado"})
+public class MisListasCompraTabla {
     // Si quiero cambiarle el nombre a la tabla @ ColumnInfo(name = "nombre_lista")
     //Tengo que tener al menos una clave primaria
     @NonNull
@@ -24,7 +24,7 @@ public class ListaCompraTabla {
     private String supermercado;
     private String fecha_actualizacion;
 
-    public ListaCompraTabla(String nombre_lista, String supermercado){
+    public MisListasCompraTabla(String nombre_lista, String supermercado){
         this.nombre_lista = nombre_lista;
         this.supermercado = supermercado;
         this.fecha_actualizacion = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());

@@ -2,8 +2,8 @@ package com.example.changosmart.listasCompras;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,9 +12,7 @@ import android.widget.Toast;
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 
-import java.sql.SQLDataException;
-
-import BD.ListaCompraTabla;
+import BD.MisListasCompraTabla;
 
 public class CrearLista extends AppCompatActivity {
     private EditText etNombreLista,
@@ -41,11 +39,11 @@ public class CrearLista extends AppCompatActivity {
 
                 if( nombreLista.isEmpty()) {
                     // Muestro mensaje
-                    Toast.makeText(view.getContext(), "Ingrese un nombre de Lista", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "Ingrese un nombre de Lista valido", Toast.LENGTH_SHORT).show();
                     etNombreLista.requestFocus();
                 }else {
                     // Creo el objeto que se guardara en la base ........
-                    ListaCompraTabla listaCompra = new ListaCompraTabla(nombreLista, supermercado);
+                    MisListasCompraTabla listaCompra = new MisListasCompraTabla(nombreLista, supermercado);
 
                     // Limpio los editText
                     etNombreLista.setText("");

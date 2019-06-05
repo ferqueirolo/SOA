@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.changosmart.R;
-import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
 
@@ -63,15 +61,6 @@ public class MiAdaptadorListaProductos extends BaseAdapter {
         tv_nombreProducto.setText(listaProductos.get(i).getNombre());
         tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
         tv_precioProducto.setText(listaProductos.get(i).getPrecio());
-
-        // Una accion si tocan en el nombre de la lista
-        myView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Muestro mensaje
-                Toast.makeText(v.getContext(),"A - A - A",Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // Retorno la vista generada
         return myView;

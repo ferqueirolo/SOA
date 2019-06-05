@@ -8,5 +8,6 @@
     <color name="backgroundActivity">#E0DDDD</color>
     <color name="backgroundColor">#FFFFFF</color>
     <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorItemLista">#CDFACD</color>
     <color name="colorAccent">#B62121</color>
 </resources>

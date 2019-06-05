@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".productos.AnadirProducto"
+            android:name=".productos.AgregarProductos"
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity

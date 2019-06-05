@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CDFACD">
+    android:background="@color/colorItemLista">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -45,7 +44,7 @@
         android:layout_height="19dp"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:background="@color/badgeColor"
         android:gravity="center"
         android:text="Supermercado"
@@ -74,21 +73,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.08" /><![CDATA[
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="20dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginRight="52dp"
-        android:background="@drawable/list_button_bg"
-        android:foreground="@drawable/settings"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFechaActualizacion"
-        app:layout_constraintTop_toTopOf="@+id/guideline2"
-        app:layout_constraintVertical_bias="0.674" />/>
+    />
 
+]]>
 </android.support.constraint.ConstraintLayout>

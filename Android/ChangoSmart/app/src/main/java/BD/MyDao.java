@@ -17,9 +17,9 @@ import java.util.List;
 public interface MyDao {
     // Firma de metodo para insertar Listas de Compras en la base ROOM
     @Insert(onConflict = OnConflictStrategy.FAIL)
-    public void  addLista(ListaCompraTabla lista);
+    public void  addLista(MisListasCompraTabla lista);
 
-    @Query("SELECT nombre_lista, supermercado, fecha_actualizacion FROM Lista_Compras ORDER BY fecha_actualizacion DESC")
+    @Query("SELECT nombre_lista, supermercado, fecha_actualizacion FROM Mis_Listas_Compras ORDER BY fecha_actualizacion DESC")
     public List<ListaCompra> getListaCompras();
 
     @Query("SELECT nombre, categoria, precio FROM Productos ORDER BY Nombre")
@@ -28,7 +28,10 @@ public interface MyDao {
     @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")
     public  List<Producto> getProductos(String nombreProducto);
 
-    @Query("DELETE FROM Lista_Compras WHERE nombre_lista = :nombre_lista AND supermercado = :supermercado")
+    @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista AND supermercado = :supermercado")
     public void deleteLista(String nombre_lista, String supermercado);
+
+    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidadAComprar WHERE supermercado = :supermercado AND nombre_lista = :nombre_lista")
+    public void update_cantidad(String nombre_lista, String supermercado, int cantidadAComprar);
 
 }

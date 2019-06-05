@@ -1,20 +1,13 @@
 package com.example.changosmart.listasCompras;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.nfc.Tag;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 
 import java.util.ArrayList;
@@ -54,6 +47,7 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
     /************************************************************************/
 
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View getView(final int i, final View convertView, ViewGroup parent) {
         // Vista que voy a retornar
@@ -70,35 +64,6 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
         nombreLista.setText(listaListaCompra.get(i).getNombre_lista());
         supermercado.setText(listaListaCompra.get(i).getSupermercado());
         fechaActualizacion.setText(listaListaCompra.get(i).getFecha_actualizacion());
-
-
-        // Una accion si tocan en el nombre de la lista
-        myView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View vistaFila) {
-                // Muestro mensaje
-                final AlertDialog.Builder opcionesListaCompra = new AlertDialog.Builder(vistaFila.getContext());
-
-                opcionesListaCompra.setTitle(R.string.title_alert_dialog_lista)
-                                    .setItems(R.array.tresOpcionesAlertDialog, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // Opcion 1 -> Iniciar Compra
-                                            // Opcion 2 -> Editar Lista
-                                            // Opcion 3 -> Eliminar Lista
-                                            switch (which){
-                                            case 2: // Eliminar Lista
-                                                eliminarListaCompra(vistaFila, i);
-                                                Log.d("V",listaListaCompra.get(i).toString());
-                                                notifyDataSetChanged();
-                                            break;
-                                            }
-                                        }
-
-                                    });
-                opcionesListaCompra.show();
-            }
-        });
 
         // Retorno la vista generada
         return myView;
@@ -118,27 +83,6 @@ public class MiAdaptadorListaCompras extends BaseAdapter {
         return 0;
     }
 
-    private void eliminarListaCompra(final View view, final int pos){
-        AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
+    public void removeItem(int position){this.listaListaCompra.remove(position);}
 
-        builder.setTitle("Confirmar Accion")
-                .setPositiveButton("SI", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.myAppDatabase.myDao().deleteLista(
-                                listaListaCompra.get(pos).getNombre_lista(),
-                                listaListaCompra.get(pos).getSupermercado()
-                        );
-                        listaListaCompra.remove(pos);
-                    }
-                })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        builder.show();
-
-    }
 }

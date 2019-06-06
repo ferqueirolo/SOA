@@ -29,13 +29,10 @@ public class AgregarProductos extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        listaProductos = new ArrayList<Producto>();
-
         // Cargo la lista de los productos
         //Se castea porque retorna una clase List
         listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
 
-        Toast.makeText(this,listaProductos.size(),Toast.LENGTH_SHORT);
 
         ListView listaProductosView = (ListView) findViewById(R.id.listViewProductos);
 
@@ -43,34 +40,12 @@ public class AgregarProductos extends AppCompatActivity {
         miAdaptadorListaProductos = new MiAdaptadorListaProductos(this, listaProductos);
         listaProductosView.setAdapter(miAdaptadorListaProductos);
 
-        listaProductosView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                        builder.setTitle("Title");
-                        final EditText input = new EditText(view.getContext());
-                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        builder.setView(input);
-
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int cantidadAComprar = Integer.valueOf(input.getText().toString());
-
-                            }
-                        });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                        builder.show();
-                    }
-                }
-        );
+        listaProductosView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog(view.getContext());
+            }
+        });
 
     }
 

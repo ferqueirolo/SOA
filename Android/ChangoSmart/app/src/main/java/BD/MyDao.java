@@ -26,7 +26,7 @@ public interface MyDao {
     public  List<Producto> getProductos();
 
     @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")
-    public  List<Producto> getProductos(String nombreProducto);
+    public  List<Producto> getProducto(String nombreProducto);
 
     @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista AND supermercado = :supermercado")
     public void deleteLista(String nombre_lista, String supermercado);
@@ -34,4 +34,8 @@ public interface MyDao {
     @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidadAComprar WHERE supermercado = :supermercado AND nombre_lista = :nombre_lista")
     public void update_cantidad(String nombre_lista, String supermercado, int cantidadAComprar);
 
+    @Insert
+    public void cargarProductos(List<ProductoTabla> listaProductoTabla);
 }
+
+

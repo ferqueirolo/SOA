@@ -49,7 +49,7 @@ public class MiAdaptadorListaProductos extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
         // Vista que voy a retornar
-        final View myView = inflater.inflate(R.layout.item_lista_lista_compra, null);
+        final View myView = inflater.inflate(R.layout.item_lista_producto, null);
 
         // Tomo los campos del xml donde voy a mostrar los datos
         TextView tv_nombreProducto      = (TextView) myView.findViewById(R.id.textViewNombreProducto);
@@ -60,7 +60,7 @@ public class MiAdaptadorListaProductos extends BaseAdapter {
         // Populo los datos de los campos del xml
         tv_nombreProducto.setText(listaProductos.get(i).getNombre());
         tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
-        tv_precioProducto.setText(listaProductos.get(i).getPrecio());
+        tv_precioProducto.setText(String.valueOf(listaProductos.get(i).getPrecio()));
 
         // Retorno la vista generada
         return myView;

@@ -34,12 +34,12 @@ public class Chango extends AppCompatActivity {
         buttonDown = findViewById(R.id.buttonDown);
         buttonRight = findViewById(R.id.buttonRight);
 
-        //Si se presiona el boton superior
+        //Si se presiona el boton avanzar
         buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'u';
+                IdentificadorMovimiento = 'A';
 
                 // Pregunto por la conexión bluetooth
                 // Le paso el caracter al arduino.
@@ -54,7 +54,7 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'l';
+                IdentificadorMovimiento = 'I';
 
                 // Pregunto por la conexión bluetooth
                 // Le paso el caracter al arduino.
@@ -64,12 +64,12 @@ public class Chango extends AppCompatActivity {
             }
         });
 
-        //Si se presiona el boton inferior
+        //Si se presiona el boton retroceder
         buttonDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'd';
+                IdentificadorMovimiento = 'R';
 
                 // Pregunto por la conexión bluetooth
                 // Le paso el caracter al arduino.
@@ -84,7 +84,7 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'r';
+                IdentificadorMovimiento = 'D';
 
                 // Pregunto por la conexión bluetooth
                 // Le paso el caracter al arduino.

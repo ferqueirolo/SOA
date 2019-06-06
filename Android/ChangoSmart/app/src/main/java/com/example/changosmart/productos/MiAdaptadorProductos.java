@@ -11,7 +11,7 @@ import com.example.changosmart.R;
 
 import java.util.ArrayList;
 
-public class MiAdaptadorListaProductos extends BaseAdapter {
+public class MiAdaptadorProductos extends BaseAdapter {
     private Context contexto;
     private ArrayList<Producto> listaProductos;
 
@@ -19,7 +19,7 @@ public class MiAdaptadorListaProductos extends BaseAdapter {
     private static LayoutInflater inflater = null;
 
     /** CONSTRUCTOR       ***************************************************/
-    public MiAdaptadorListaProductos(Context contexto, ArrayList<Producto> listaProductos) {
+    public MiAdaptadorProductos(Context contexto, ArrayList<Producto> listaProductos) {
         this.contexto = contexto;
         this.listaProductos = listaProductos;
 

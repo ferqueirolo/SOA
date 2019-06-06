@@ -2,10 +2,7 @@ package BD;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-
-import com.example.changosmart.productos.Producto;
-
-import java.util.ArrayList;
+import android.support.annotation.NonNull;
 
 /**
  * Clase Tabla para utilizarla desde ROOM
@@ -13,9 +10,8 @@ import java.util.ArrayList;
 
 @Entity(tableName = "Productos")
 public class ProductoTabla {
-    @PrimaryKey(autoGenerate = true)
-    private int ID;
-
+    @PrimaryKey
+    @NonNull
     private String nombre;
     private String categoria;
     private int precio;
@@ -27,9 +23,6 @@ public class ProductoTabla {
     }
 
     /** GETTERS   *****************************/
-    public int getID() {
-        return ID;
-    }
 
     public String getNombre() {
         return nombre;
@@ -44,9 +37,6 @@ public class ProductoTabla {
     }
 
     /** SETTERS   *****************************/
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;

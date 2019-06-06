@@ -1,49 +1,49 @@
 package com.example.changosmart.productos;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
+import com.example.changosmart.listasCompras.LineaCompra;
 
 import java.util.ArrayList;
 
-public class AgregarProductos extends AppCompatActivity {
-    private ArrayList<Producto> listaProductos;
+public class DetalleLista extends AppCompatActivity {
+    private ArrayList<LineaCompra> detalleLista;
 
-    public static MiAdaptadorListaProductos miAdaptadorListaProductos;
+    public static MiAdaptadorDetalleLista miAdaptadorProductos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anadir_producto);
+        Bundle bundleRecibido = this.getIntent().getExtras();
+        // SE DEBE RECIBIR EN EL INTENT EL NOMBRE DE LA LISTA
+        String nombreListaRecibido = (String) bundleRecibido.get("NOMBRE_LISTA");
+
+        setContentView(R.layout.activity_detalle_lista);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Cargo la lista de los productos
         //Se castea porque retorna una clase List
-        listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+        detalleLista = (ArrayList) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
 
 
         ListView listaProductosView = (ListView) findViewById(R.id.listViewProductos);
 
         //Seteo el adaptador y le paso la lista de los productos
-        miAdaptadorListaProductos = new MiAdaptadorListaProductos(this, listaProductos);
-        listaProductosView.setAdapter(miAdaptadorListaProductos);
+        miAdaptadorProductos = new MiAdaptadorDetalleLista(this, detalleLista);
+        listaProductosView.setAdapter(miAdaptadorProductos);
 
         listaProductosView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog(view.getContext());
+                //AlertDialog.Builder builder = new AlertDialog(view.getContext());
             }
         });
 

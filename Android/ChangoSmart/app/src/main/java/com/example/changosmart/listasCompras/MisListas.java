@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
-import com.example.changosmart.productos.AgregarProductos;
+import com.example.changosmart.productos.DetalleLista;
 
 import java.util.ArrayList;
 
@@ -56,8 +56,9 @@ public class MisListas extends AppCompatActivity {
                                 // Opcion 3 -> Eliminar Lista
                                 switch (which){
                                     case 1:
-                                        Intent agregarProductoIntent = new Intent(view.getContext(), AgregarProductos.class);
-                                        startActivity(agregarProductoIntent);
+                                        Intent detalleLista = new Intent(view.getContext(), DetalleLista.class);
+                                        detalleLista.putExtra("NOMBRE_LISTA", misListasCompras.get(position).getNombre_lista());
+                                        startActivity(detalleLista);
                                         break;
                                     case 2: // Eliminar Lista
                                         eliminarListaCompra(view, position);
@@ -115,8 +116,7 @@ public class MisListas extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity.myAppDatabase.myDao().deleteLista(
-                                misListasCompras.get(pos).getNombre_lista(),
-                                misListasCompras.get(pos).getSupermercado()
+                                misListasCompras.get(pos).getNombre_lista()
                         );
                         misListasCompras.remove(pos);
                         adaptador.removeItem(pos);

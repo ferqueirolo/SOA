@@ -14,13 +14,12 @@ import java.util.Calendar;
  * Se emplea usando ROOM library
  */
 
-@Entity(tableName = "Mis_Listas_Compras", primaryKeys ={"nombre_lista", "supermercado"})
+@Entity(tableName = "Mis_Listas_Compras", primaryKeys ={"nombre_lista"})
 public class MisListasCompraTabla {
     // Si quiero cambiarle el nombre a la tabla @ ColumnInfo(name = "nombre_lista")
     //Tengo que tener al menos una clave primaria
     @NonNull
     private String nombre_lista;
-    @NonNull
     private String supermercado;
     private String fecha_actualizacion;
 
@@ -38,7 +37,6 @@ public class MisListasCompraTabla {
     public void setSupermercado(String supermercado) {
         this.supermercado = supermercado;
     }
-
 
     public void setFecha_actualizacion(String fecha_actualizacion) { this.fecha_actualizacion = fecha_actualizacion; }
 

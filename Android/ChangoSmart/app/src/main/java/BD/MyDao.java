@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import com.example.changosmart.listasCompras.LineaCompra;
 import com.example.changosmart.listasCompras.ListaCompra;
 import com.example.changosmart.productos.Producto;
 
@@ -28,14 +29,16 @@ public interface MyDao {
     @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")
     public  List<Producto> getProducto(String nombreProducto);
 
-    @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista AND supermercado = :supermercado")
-    public void deleteLista(String nombre_lista, String supermercado);
+    @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista")
+    public void deleteLista(String nombre_lista);
 
-    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidadAComprar WHERE supermercado = :supermercado AND nombre_lista = :nombre_lista")
-    public void update_cantidad(String nombre_lista, String supermercado, int cantidadAComprar);
+    @Query("SELECT nombre_lista, nombre_producto, cantidadAComprar, cantidadComprada FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista")
+    public List<LineaCompra> getDetalleLista(String nombre_lista);
+
+    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidadAComprar WHERE nombre_lista = :nombre_lista")
+    public void update_cantidad(String nombre_lista, int cantidadAComprar);
+
 
     @Insert
     public void cargarProductos(List<ProductoTabla> listaProductoTabla);
 }
-
-

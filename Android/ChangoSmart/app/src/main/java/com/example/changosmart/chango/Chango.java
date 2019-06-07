@@ -69,7 +69,12 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'R';
+                //Si el estado anterior era una A, significa que debe detenerse ( S ), sino, retrocedo (b)
+                if ( IdentificadorMovimiento == 'A' || IdentificadorMovimiento == 'I' || IdentificadorMovimiento == 'D' ) {
+                    IdentificadorMovimiento = 'S';
+                } else {
+                    IdentificadorMovimiento = 'B';
+                }
 
                 // Pregunto por la conexión bluetooth
                 // Le paso el caracter al arduino.

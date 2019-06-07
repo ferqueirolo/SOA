@@ -14,11 +14,11 @@ public class DetalleListaCompraTabla {
     private int cantidadAComprar;
     private int cantidadComprada;
 
-    public DetalleListaCompraTabla(@NonNull String nombre_lista, @NonNull String nombre_producto, int cantidadAComprar, int cantidadComprada) {
+    public DetalleListaCompraTabla(@NonNull String nombre_lista, @NonNull String nombre_producto, int cantidadAComprar) {
         this.nombre_lista = nombre_lista;
         this.nombre_producto = nombre_producto;
         this.cantidadAComprar = cantidadAComprar;
-        this.cantidadComprada = cantidadComprada;
+        this.cantidadComprada = 0;
     }
 
     @NonNull

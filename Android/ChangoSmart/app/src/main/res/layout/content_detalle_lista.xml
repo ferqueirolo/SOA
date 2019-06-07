@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_detalle_lista">
 
     <ListView
-        android:id="@+id/listViewProductos"
+        android:id="@+id/listViewDetalleLista"
         android:layout_width="393dp"
         android:layout_height="446dp"
         android:layout_marginStart="8dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonAgregarProductos"
         android:layout_width="151dp"
         android:layout_height="60dp"
         android:layout_gravity="bottom|end"

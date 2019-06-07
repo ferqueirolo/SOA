@@ -1,25 +1,33 @@
 package com.example.changosmart.listasCompras;
 
-import com.example.changosmart.productos.Producto;
-
 public class LineaCompra {
-    private Producto producto;
+    private String nombreProducto,
+                    categoria;
     private int cantidadAComprar,
-                cantidadComprada = 0;
+                cantidadComprada = 0,
+                precio;
 
-    public LineaCompra(Producto producto, int cantidadAComprar) {
-        this.producto = producto;
+    public LineaCompra(String nombreProducto, String categoria, int cantidadAComprar, int precio) {
+        this.nombreProducto = nombreProducto;
+        this.categoria = categoria;
         this.cantidadAComprar = cantidadAComprar;
-        this.cantidadComprada = 0;
+        this.precio = precio;
     }
 
-
-    public Producto getProducto() {
-        return producto;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public int getCantidadAComprar() {
@@ -36,5 +44,13 @@ public class LineaCompra {
 
     public void setCantidadComprada(int cantidadComprada) {
         this.cantidadComprada = cantidadComprada;
+    }
+
+    public int getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(int precio) {
+        this.precio = precio;
     }
 }

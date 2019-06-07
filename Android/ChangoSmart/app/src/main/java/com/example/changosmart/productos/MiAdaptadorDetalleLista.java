@@ -15,11 +15,12 @@ import java.util.ArrayList;
 public class MiAdaptadorDetalleLista extends BaseAdapter {
     private Context contexto;
     private ArrayList<LineaCompra> listaDetalle;
-    private static LayoutInflater inflater = null;
+    private static LayoutInflater inflater;
 
     public MiAdaptadorDetalleLista(Context contexto, ArrayList<LineaCompra> listaDetalle) {
         this.contexto = contexto;
         this.listaDetalle = listaDetalle;
+        inflater = LayoutInflater.from(contexto);
     }
 
     public Context getContexto() {
@@ -41,13 +42,13 @@ public class MiAdaptadorDetalleLista extends BaseAdapter {
         TextView nombreProducto     = (TextView) myView.findViewById(R.id.textViewDetalleProducto);
         TextView categoriaProducto  = (TextView) myView.findViewById(R.id.textViewDetalleCategoria);
         TextView precioProducto     = (TextView) myView.findViewById(R.id.textViewDetallePrecio);
-        TextView cantidadProducto   = (TextView) myView.findViewById(R.id.textViewDetalleProducto);
+        TextView cantidadProducto   = (TextView) myView.findViewById(R.id.textViewDetalleCantComprar);
 
 
-        nombreProducto.setText(listaDetalle.get(position).getProducto().getNombre());
-        categoriaProducto.setText(listaDetalle.get(position).getProducto().getCategoria());
-        precioProducto.setText(listaDetalle.get(position).getProducto().getPrecio());
-        cantidadProducto.setText(listaDetalle.get(position).getcantidadAComprar());
+        nombreProducto.setText(listaDetalle.get(position).getNombreProducto());
+        categoriaProducto.setText(listaDetalle.get(position).getCategoria());
+        precioProducto.setText(String.valueOf(listaDetalle.get(position).getPrecio()));
+        cantidadProducto.setText(String.valueOf(listaDetalle.get(position).getCantidadAComprar()));
 
         return myView;
     }

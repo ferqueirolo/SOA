@@ -5,12 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".TodosProductos"
+    tools:context=".productos.TodosProductos"
     tools:showIn="@layout/activity_todos_productos">
 
     <ListView
-        android:layout_width="392dp"
-        android:layout_height="658dp"
-        tools:layout_editor_absoluteX="9dp"
-        tools:layout_editor_absoluteY="1dp" />
+        android:id="@+id/listViewTodosProductos"
+        android:layout_width="404dp"
+        android:layout_height="558dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

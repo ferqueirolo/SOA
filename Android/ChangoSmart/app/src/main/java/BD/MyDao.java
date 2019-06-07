@@ -27,18 +27,26 @@ public interface MyDao {
     public  List<Producto> getProductos();
 
     @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")
-    public  List<Producto> getProducto(String nombreProducto);
+    public  Producto getProducto(String nombreProducto);
 
     @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista")
     public void deleteLista(String nombre_lista);
 
-    @Query("SELECT nombre_lista, nombre_producto, cantidadAComprar, cantidadComprada FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista")
+    @Query("SELECT Dlc.nombre_producto nombreProducto, P.categoria, P.precio, Dlc.cantidadAComprar, Dlc.cantidadComprada " +
+            "FROM Detalle_Lista_Compra Dlc, Productos P " +
+            "WHERE Dlc.nombre_producto = P.nombre " +
+              "AND Dlc.nombre_lista = :nombre_lista")
     public List<LineaCompra> getDetalleLista(String nombre_lista);
-
-    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidadAComprar WHERE nombre_lista = :nombre_lista")
-    public void update_cantidad(String nombre_lista, int cantidadAComprar);
-
 
     @Insert
     public void cargarProductos(List<ProductoTabla> listaProductoTabla);
+
+    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidad + cantidadAComprar WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
+    public void actualizarCantidadAComprar(String nombre_lista, String nombre_producto, int cantidad);
+
+    @Query("SELECT 1 FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
+    public int existeProductoEnLista(String nombre_lista, String nombre_producto);
+
+    @Insert
+    public void insertarLineaCompra(DetalleListaCompraTabla detalleListaCompraTabla);
 }

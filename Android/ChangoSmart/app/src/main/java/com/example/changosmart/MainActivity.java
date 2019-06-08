@@ -12,11 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.changosmart.listasCompras.MisListas;
+import com.example.changosmart.productos.Producto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import BD.MyAppDatabase;
+import BD.ProductoTabla;
 
 public class MainActivity extends AppCompatActivity {
     public static MyAppDatabase myAppDatabase;
+    private boolean primeraEjecucion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,24 @@ public class MainActivity extends AppCompatActivity {
         // HAY QUE CREAR UN HILO PARA QUE NO TRABAJE EN EL HILO PRINCIPAL
         myAppDatabase = Room.databaseBuilder(this.getApplicationContext(), MyAppDatabase.class, "db").allowMainThreadQueries().build();
 
+        if(! primeraEjecucion){
+            cargarProductos();
+            primeraEjecucion = true;
+        }
+
+    }
+
+    private void cargarProductos() {
+        if (myAppDatabase.myDao().getProductos().isEmpty()) {
+            List<ProductoTabla> listaProductoTabla = new ArrayList<ProductoTabla>();
+            listaProductoTabla.add(new ProductoTabla("Oreo", "Comida", 20));
+            listaProductoTabla.add(new ProductoTabla("Paty Swirft", "Congelado", 30));
+            listaProductoTabla.add(new ProductoTabla("Axe", "Higiene", 15));
+            listaProductoTabla.add(new ProductoTabla("Cuchillo", "Hogar", 30));
+            listaProductoTabla.add(new ProductoTabla("Birome Bic", "Libreria", 10));
+
+            myAppDatabase.myDao().cargarProductos(listaProductoTabla);
+        }
     }
 
     @Override

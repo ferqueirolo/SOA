@@ -10,13 +10,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".productos.AgregarProductos"
-            android:label="@string/title_activity_anadir_producto"
+            android:name=".productos.TodosProductos"
+            android:label="@string/title_activity_todos_productos"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".listasCompras.detalleListas.DetalleLista"
+            android:label="@string/title_activity_anadir_producto"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".listasCompras.CrearLista"
             android:label="@string/title_activity_crear_lista"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".listasCompras.MisListas"
             android:label="@string/title_activity_mis_listas"

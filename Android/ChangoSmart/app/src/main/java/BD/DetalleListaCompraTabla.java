@@ -3,30 +3,22 @@ package BD;
 import android.arch.persistence.room.Entity;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "Detalle_Lista_Compra", primaryKeys ={"supermercado", "nombre_lista", "id_producto"})
+@Entity(tableName = "Detalle_Lista_Compra", primaryKeys ={"nombre_lista", "nombre_producto"})
 public class DetalleListaCompraTabla {
 
-    @NonNull
-    private String supermercado;
+
     @NonNull
     private String nombre_lista;
     @NonNull
-    private String id_producto;
+    private String nombre_producto;
     private int cantidadAComprar;
+    private int cantidadComprada;
 
-    public DetalleListaCompraTabla(@NonNull String supermercado, @NonNull String nombre_lista, @NonNull String id_producto) {
-        this.supermercado = supermercado;
+    public DetalleListaCompraTabla(@NonNull String nombre_lista, @NonNull String nombre_producto, int cantidadAComprar) {
         this.nombre_lista = nombre_lista;
-        this.id_producto = id_producto;
-    }
-
-    @NonNull
-    public String getSupermercado() {
-        return supermercado;
-    }
-
-    public void setSupermercado(@NonNull String supermercado) {
-        this.supermercado = supermercado;
+        this.nombre_producto = nombre_producto;
+        this.cantidadAComprar = cantidadAComprar;
+        this.cantidadComprada = 0;
     }
 
     @NonNull
@@ -39,12 +31,12 @@ public class DetalleListaCompraTabla {
     }
 
     @NonNull
-    public String getId_producto() {
-        return id_producto;
+    public String getNombre_producto() {
+        return nombre_producto;
     }
 
-    public void setId_producto(@NonNull String id_producto) {
-        this.id_producto = id_producto;
+    public void setNombre_producto(@NonNull String nombre_producto) {
+        this.nombre_producto = nombre_producto;
     }
 
     public int getCantidadAComprar() {
@@ -53,5 +45,13 @@ public class DetalleListaCompraTabla {
 
     public void setCantidadAComprar(int cantidadAComprar) {
         this.cantidadAComprar = cantidadAComprar;
+    }
+
+    public int getCantidadComprada() {
+        return cantidadComprada;
+    }
+
+    public void setCantidadComprada(int cantidadComprada) {
+        this.cantidadComprada = cantidadComprada;
     }
 }

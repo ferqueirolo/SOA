@@ -2,6 +2,7 @@ package BD;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 /**
  * Clase Tabla para utilizarla desde ROOM
@@ -10,16 +11,18 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "Productos")
 public class ProductoTabla {
     @PrimaryKey
-    private int ID;
-
+    @NonNull
     private String nombre;
     private String categoria;
     private int precio;
 
-    /** GETTERS   *****************************/
-    public int getID() {
-        return ID;
+    public ProductoTabla(String nombre, String categoria, int precio) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
     }
+
+    /** GETTERS   *****************************/
 
     public String getNombre() {
         return nombre;
@@ -34,9 +37,6 @@ public class ProductoTabla {
     }
 
     /** SETTERS   *****************************/
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -49,4 +49,5 @@ public class ProductoTabla {
     public void setPrecio(int precio) {
         this.precio = precio;
     }
+
 }

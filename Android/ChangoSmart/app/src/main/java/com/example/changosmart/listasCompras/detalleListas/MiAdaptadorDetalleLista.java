@@ -1,4 +1,4 @@
-package com.example.changosmart.productos;
+package com.example.changosmart.listasCompras.detalleListas;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.changosmart.R;
-import com.example.changosmart.listasCompras.LineaCompra;
 
 import java.util.ArrayList;
 
@@ -70,5 +69,11 @@ public class MiAdaptadorDetalleLista extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    public void removeItem(int position) { this.listaDetalle.remove(position);}
+
+    public void actualizarCantidadAComprar(int position, Integer valueOf) {
+        this.listaDetalle.get(position).setCantidadAComprar(valueOf);
     }
 }

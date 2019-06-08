@@ -1,6 +1,7 @@
 package com.example.changosmart.productos;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
+import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +93,17 @@ public class TodosProductos extends AppCompatActivity {
                 dialog.show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intentDetalleListas = new Intent(this, DetalleLista.class);
+        intentDetalleListas.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intentDetalleListas);
+
+        // Eliminamos la actividad actual para que no quede viva
+        setResult(RESULT_OK, null);
+        finish();
     }
 
 }

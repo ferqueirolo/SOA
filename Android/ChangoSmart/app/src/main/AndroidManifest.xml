@@ -14,7 +14,7 @@
             android:label="@string/title_activity_todos_productos"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".productos.DetalleLista"
+            android:name=".listasCompras.detalleListas.DetalleLista"
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
-import com.example.changosmart.productos.DetalleLista;
+import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
 
@@ -56,9 +56,9 @@ public class MisListas extends AppCompatActivity {
                                 // Opcion 3 -> Eliminar Lista
                                 switch (which){
                                     case 1:
-                                        Intent detalleLista = new Intent(view.getContext(), DetalleLista.class);
-                                        detalleLista.putExtra("NOMBRE_LISTA", misListasCompras.get(position).getNombre_lista());
-                                        startActivity(detalleLista);
+                                        Intent intentDetalleLista = new Intent(view.getContext(), DetalleLista.class);
+                                        intentDetalleLista.putExtra("NOMBRE_LISTA", misListasCompras.get(position).getNombre_lista());
+                                        startActivity(intentDetalleLista);
                                         break;
                                     case 2: // Eliminar Lista
                                         eliminarListaCompra(view, position);
@@ -131,6 +131,5 @@ public class MisListas extends AppCompatActivity {
                 });
         builder.show();
     }
-
 
 }

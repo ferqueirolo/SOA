@@ -5,8 +5,8 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.changosmart.listasCompras.LineaCompra;
 import com.example.changosmart.listasCompras.ListaCompra;
+import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
 import com.example.changosmart.productos.Producto;
 
 import java.util.List;
@@ -49,4 +49,7 @@ public interface MyDao {
 
     @Insert
     public void insertarLineaCompra(DetalleListaCompraTabla detalleListaCompraTabla);
+
+    @Query("DELETE FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
+    public void eliminarProductoEnLista(String nombre_lista, String nombre_producto);
 }

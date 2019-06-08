@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
-import com.example.changosmart.productos.DetalleLista;
+import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import BD.MisListasCompraTabla;
 
@@ -54,6 +54,7 @@ public class CrearLista extends AppCompatActivity {
             public void onClick(View view) {
                 if (crearNuevaLista(view)) {
                     Intent intentDetalleLista = new Intent(view.getContext(), DetalleLista.class);
+                    intentDetalleLista.putExtra("NOMBRE_LISTA",etNombreLista.getText().toString());
                     startActivity(intentDetalleLista);
                     finish();
                 }

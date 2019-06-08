@@ -1,4 +1,4 @@
-package com.example.changosmart.listasCompras;
+package com.example.changosmart.listasCompras.detalleListas;
 
 public class LineaCompra {
     private String nombreProducto,

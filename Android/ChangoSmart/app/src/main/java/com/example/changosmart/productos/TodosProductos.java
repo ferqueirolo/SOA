@@ -22,14 +22,13 @@ import android.widget.Toast;
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
-import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
-import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLista;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import BD.DetalleListaCompraTabla;
 import BD.ShakeDetector;
+import com.example.changosmart.ShakeService;
 
 public class TodosProductos extends AppCompatActivity {
     private ArrayList<Producto> listaProductos;
@@ -59,26 +58,26 @@ public class TodosProductos extends AppCompatActivity {
         //DEFINICION DEL BUSCADOR
         EditText Filter2 = (EditText) findViewById(R.id.searchFilter2);
         //Activo sensor shake
-/*        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Intent intent = new Intent(this, ShakeService.class);
+        //Start Service
+        startService(intent);
+
+        // ShakeDetector initialization
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager              .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mShakeDetector = new ShakeDetector();
         mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-
-            @Override
-            public void onShake(int count) {
-                /*
-                 * The following method, "handleShakeEvent(count):" is a stub //
-                 * method you would use to setup whatever you want done once the
-                 * device has been shook.
-                 */
-                //abrir lector QR
-/*                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(TodosProductos.this);
-                dialogo1.setMessage("QR");
-
-            }
+              @Override
+              public void onShake(int count) {
+                  /*
+                   * The following method, "handleShakeEvent(count):" is a stub //
+                   * method you would use to setup whatever you want done once the
+                   * device has been shook.
+                   */
+                  Toast.makeText(TodosProductos.this, "Shaked!!!", Toast.LENGTH_SHORT).show();
+              }
         });
-*/
+
         if(listaProductos == null)
             listaProductos = new ArrayList<Producto>();
 

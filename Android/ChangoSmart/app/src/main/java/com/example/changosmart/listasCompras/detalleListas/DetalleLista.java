@@ -1,6 +1,5 @@
 package com.example.changosmart.listasCompras.detalleListas;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,11 +24,8 @@ import com.example.changosmart.R;
 import com.example.changosmart.productos.TodosProductos;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import BD.ShakeDetector;
-
-import static java.lang.Thread.sleep;
 
 public class DetalleLista extends AppCompatActivity {
     private ArrayList<LineaCompra> detalleLista;
@@ -151,7 +146,7 @@ public class DetalleLista extends AppCompatActivity {
                  * method you would use to setup whatever you want done once the
                  * device has been shook.
                  */
-                ShakeDetector.handleShakeEvent();
+//                ShakeDetector.handleShakeEvent();
             }
         });
         Filter1.addTextChangedListener(new TextWatcher() {

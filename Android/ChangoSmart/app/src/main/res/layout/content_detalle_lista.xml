@@ -8,13 +8,31 @@
     tools:context=".listasCompras.detalleListas.DetalleLista"
     tools:showIn="@layout/activity_detalle_lista">
 
-    <ListView
-        android:id="@+id/listViewDetalleLista"
-        android:layout_width="393dp"
-        android:layout_height="446dp"
+
+    <EditText
+        android:id="@+id/searchFilter"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:hint="BUSCAR"
+        android:text=""
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/listViewDetalleLista"
+        android:layout_width="398dp"
+        android:layout_height="457dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="108dp"
         android:layout_marginEnd="7dp"
         android:layout_marginRight="7dp"
         app:layout_constraintEnd_toEndOf="parent"

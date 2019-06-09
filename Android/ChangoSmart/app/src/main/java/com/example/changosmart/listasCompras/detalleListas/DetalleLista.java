@@ -1,13 +1,21 @@
 package com.example.changosmart.listasCompras.detalleListas;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,11 +26,23 @@ import com.example.changosmart.R;
 import com.example.changosmart.productos.TodosProductos;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import BD.ShakeDetector;
+
+import static java.lang.Thread.sleep;
 
 public class DetalleLista extends AppCompatActivity {
     private ArrayList<LineaCompra> detalleLista;
+    private ArrayList<LineaCompra> detalleListaFilt;
     private String nombreListaRecibido;
     private ListView listaProductosView;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
+    private static final String TAG = "MainActivity";
+    private ArrayAdapter adapter;
 
     public static MiAdaptadorDetalleLista miAdaptadorDetalleLista;
 
@@ -51,6 +71,10 @@ public class DetalleLista extends AppCompatActivity {
         //Seteo el adaptador y le paso la lista de los productos
         miAdaptadorDetalleLista = new MiAdaptadorDetalleLista(this, detalleLista);
         listaProductosView.setAdapter(miAdaptadorDetalleLista);
+        /*      adapter = new ArrayAdapter<>(this, R.id.listViewDetalleLista, R.id.textView2, detalleLista );
+        listaProductosView.setTextFilterEnabled(true);
+        listaProductosView.setAdapter(adapter);
+        */
 
         buttonAgregarProductos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +89,7 @@ public class DetalleLista extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetalleLista.this);
-                View miAlertDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.alertdialog_linea_compra,null);
+                View miAlertDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.alertdialog_linea_compra, null);
                 final EditText etCantidad = (EditText) miAlertDialog.findViewById(R.id.editTextDetalleCantidadProducto);
                 builder.setView(miAlertDialog);
                 final AlertDialog dialog = builder.create();
@@ -75,10 +99,10 @@ public class DetalleLista extends AppCompatActivity {
                 buttonAceptarAlertProducto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (etCantidad.getText().toString().isEmpty() || Integer.valueOf(etCantidad.getText().toString()) <= 0){
+                        if (etCantidad.getText().toString().isEmpty() || Integer.valueOf(etCantidad.getText().toString()) <= 0) {
                             Toast.makeText(DetalleLista.this, "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
-                        }else{
-                            MainActivity.myAppDatabase.myDao().actualizarCantidadAComprar(nombreListaRecibido,detalleLista.get(position).getNombreProducto(),Integer.valueOf(etCantidad.getText().toString()));
+                        } else {
+                            MainActivity.myAppDatabase.myDao().actualizarCantidadAComprar(nombreListaRecibido, detalleLista.get(position).getNombreProducto(), Integer.valueOf(etCantidad.getText().toString()));
                             miAdaptadorDetalleLista.actualizarCantidadAComprar(position, Integer.valueOf(etCantidad.getText().toString()));
                             miAdaptadorDetalleLista.notifyDataSetChanged();
                             dialog.dismiss();
@@ -95,13 +119,12 @@ public class DetalleLista extends AppCompatActivity {
                     }
                 });
 
-
                 Button buttonEliminarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogDetalleEliminar);
 
                 buttonEliminarAlertProducto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MainActivity.myAppDatabase.myDao().eliminarProductoEnLista(nombreListaRecibido,detalleLista.get(position).getNombreProducto());
+                        MainActivity.myAppDatabase.myDao().eliminarProductoEnLista(nombreListaRecibido, detalleLista.get(position).getNombreProducto());
                         miAdaptadorDetalleLista.removeItem(position);
                         miAdaptadorDetalleLista.notifyDataSetChanged();
                         dialog.dismiss();
@@ -111,8 +134,56 @@ public class DetalleLista extends AppCompatActivity {
                 dialog.show();
             }
         });
-    }
 
+        //DEFINICION DEL BUSCADOR
+        EditText Filter1 = (EditText) findViewById(R.id.searchFilter);
+
+        //Activo sensor shake
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+                /*
+                 * The following method, "handleShakeEvent(count):" is a stub //
+                 * method you would use to setup whatever you want done once the
+                 * device has been shook.
+                 */
+                ShakeDetector.handleShakeEvent();
+            }
+        });
+        Filter1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                detalleLista = (ArrayList<LineaCompra>) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
+                detalleListaFilt=new ArrayList<LineaCompra>();
+                if(charSequence.toString().equals("")) {
+                    // reset listview
+                        detalleListaFilt=(ArrayList<LineaCompra>) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
+                }
+                else {
+                    for (LineaCompra item : detalleLista) {
+                        if ((item.getNombreProducto().toLowerCase()).contains(charSequence.toString().toLowerCase())) {
+                            detalleListaFilt.add(item);
+                        }
+                    }
+                }
+                miAdaptadorDetalleLista = new MiAdaptadorDetalleLista(DetalleLista.this, detalleListaFilt);
+                listaProductosView.setAdapter(miAdaptadorDetalleLista);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+    }
 
     @Override
     public void onResume() {
@@ -123,5 +194,4 @@ public class DetalleLista extends AppCompatActivity {
         miAdaptadorDetalleLista.setListaDetalle(detalleLista);
         listaProductosView.setAdapter(miAdaptadorDetalleLista);
     }
-
 }

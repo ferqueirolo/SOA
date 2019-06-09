@@ -1,13 +1,19 @@
 package com.example.changosmart.productos;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,16 +22,26 @@ import android.widget.Toast;
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
+import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
+import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLista;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import BD.DetalleListaCompraTabla;
+import BD.ShakeDetector;
 
 public class TodosProductos extends AppCompatActivity {
     private ArrayList<Producto> listaProductos;
+    private ArrayList<Producto> listaProductosFilt;
     private MiAdaptadorProductos miAdaptadorProductos;
     private HashMap<String, Integer> hashMapCantidades;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
+    private static final String TAG = "MainActivity";
+    private ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +53,32 @@ public class TodosProductos extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
 
+
+        listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+        //DEFINICION DEL BUSCADOR
+        EditText Filter2 = (EditText) findViewById(R.id.searchFilter2);
+        //Activo sensor shake
+/*        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                /*
+                 * The following method, "handleShakeEvent(count):" is a stub //
+                 * method you would use to setup whatever you want done once the
+                 * device has been shook.
+                 */
+                //abrir lector QR
+/*                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(TodosProductos.this);
+                dialogo1.setMessage("QR");
+
+            }
+        });
+*/
         if(listaProductos == null)
             listaProductos = new ArrayList<Producto>();
 
@@ -93,6 +133,36 @@ public class TodosProductos extends AppCompatActivity {
                 dialog.show();
             }
         });
+        Filter2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+                listaProductosFilt=new ArrayList<Producto>();
+                if(charSequence.toString().equals("")) {
+                    // reset listview
+                    listaProductosFilt = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+                }
+                else {
+                    for (Producto item : listaProductos) {
+                        if ((item.getNombre().toLowerCase()).contains(charSequence.toString().toLowerCase())) {
+                            listaProductosFilt.add(item);
+                        }
+                    }
+                }
+                miAdaptadorProductos = new MiAdaptadorProductos(TodosProductos.this,listaProductosFilt);
+                listaProductosView.setAdapter(miAdaptadorProductos);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
     }
 
     @Override

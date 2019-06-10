@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import com.example.changosmart.listasCompras.MisListas;
 import com.example.changosmart.chango.Chango;
+import com.example.changosmart.productos.AnadirProducto;
+import com.example.changosmart.productos.AnadirProductoExpress;
 
 import BD.MyAppDatabase;
 
@@ -76,5 +78,10 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage (View view){
         Intent openMisListas = new Intent(this, MisListas.class);
         startActivity(openMisListas);
+    }
+
+    public void openListExpress (View view){
+        Intent openListExpress = new Intent(this, AnadirProductoExpress.class);
+        startActivity(openListExpress);
     }
 }

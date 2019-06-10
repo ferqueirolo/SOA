@@ -20,7 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_anadir_producto" />
+    <include layout="@layout/content_anadir_producto_express" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/buttonColor"
+        app:srcCompat="@drawable/steering" />
 
 
 </android.support.design.widget.CoordinatorLayout>

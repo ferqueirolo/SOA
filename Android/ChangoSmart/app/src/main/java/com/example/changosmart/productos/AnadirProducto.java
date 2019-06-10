@@ -34,14 +34,14 @@ public class AnadirProducto extends AppCompatActivity {
         //Seteo el adaptador y le paso la lista de los productos
         listaProductosView.setAdapter(new MiAdaptadorListaProductos(this, listaProductos));
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//            FloatingActionButton qr = findViewById(R.id.qr);
+//            qr.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
+//                }
+//            });
     }
 
 }

@@ -3,16 +3,14 @@ package com.example.changosmart.QR;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.webkit.URLUtil;
 
 import com.example.changosmart.R;
 import com.example.changosmart.productos.AnadirProductoExpress;
@@ -117,7 +115,7 @@ public class QR extends AppCompatActivity {
                         Intent i = new Intent(QR.this, AnadirProductoExpress.class);
                         i.putExtra("idProducto",tokenanterior);
                         startActivity(i);
-
+                        finish();
                     }
                 }
             }

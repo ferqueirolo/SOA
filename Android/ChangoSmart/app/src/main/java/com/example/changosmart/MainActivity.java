@@ -13,6 +13,9 @@ import android.view.MenuItem;
 
 import com.example.changosmart.listasCompras.MisListas;
 import com.example.changosmart.productos.Producto;
+import com.example.changosmart.chango.Chango;
+import com.example.changosmart.productos.AnadirProducto;
+import com.example.changosmart.productos.AnadirProductoExpress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+
+        //Botón para mover el chango
+        FloatingActionButton moveChart = findViewById(R.id.moveChart);
+        moveChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent moveChango = new Intent( view.getContext(), Chango.class);
+                startActivity(moveChango);
             }
         });
 
@@ -89,5 +102,10 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage (View view){
         Intent openMisListas = new Intent(this, MisListas.class);
         startActivity(openMisListas);
+    }
+
+    public void openListExpress (View view){
+        Intent openListExpress = new Intent(this, AnadirProductoExpress.class);
+        startActivity(openListExpress);
     }
 }

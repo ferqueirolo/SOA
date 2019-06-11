@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.changosmart">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_cart"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_cart_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -14,12 +16,20 @@
             android:label="@string/title_activity_todos_productos"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".listasCompras.detalleListas.DetalleLista"
+            android:name=".QR.QR"
+            android:label="QR"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".productos.AnadirProductoExpress"
             android:label="@string/title_activity_anadir_producto"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".listasCompras.CrearLista"
             android:label="@string/title_activity_crear_lista"
+            android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+            android:name=".listasCompras.detalleListas.DetalleLista"
+            android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".listasCompras.MisListas"
@@ -35,7 +45,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".ShakeService"></service>
+		<service android:name=".ShakeService"></service>
+        <activity
+            android:name=".chango.Chango"
+            android:label="Conducir Chango"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

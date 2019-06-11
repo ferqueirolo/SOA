@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".productos.TodosProductos">
+    tools:context=".productos.AnadirProducto">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -20,7 +20,17 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_todos_productos" />
+    <include layout="@layout/content_anadir_producto_express" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/buttonColor"
+        app:srcCompat="@drawable/steering" />
 
 
 </android.support.design.widget.CoordinatorLayout>

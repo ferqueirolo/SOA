@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".productos.AnadirProducto">
+    tools:context=".productos.AnadirProductoExpress">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
         app:backgroundTint="@color/buttonColor"
-        app:srcCompat="@drawable/steering" />
+        app:srcCompat="@drawable/qrcode" />
 
 
 </android.support.design.widget.CoordinatorLayout>

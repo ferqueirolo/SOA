@@ -50,7 +50,7 @@ public class QR extends AppCompatActivity {
         cameraSource = new CameraSource
                 .Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(1600, 1024)
-                .setAutoFocusEnabled(true) //you should add this feature
+                .setAutoFocusEnabled(true)
                 .build();
 
         // listener de ciclo de vida de la camara
@@ -96,7 +96,6 @@ public class QR extends AppCompatActivity {
             public void release() {
             }
 
-
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
@@ -113,14 +112,12 @@ public class QR extends AppCompatActivity {
                         // guardamos el ultimo token proceado
                         tokenanterior = token;
                         Intent i = new Intent(QR.this, AnadirProductoExpress.class);
-                        i.putExtra("idProducto",tokenanterior);
+                        i.putExtra("nombreProducto",tokenanterior);
                         startActivity(i);
                         finish();
                     }
                 }
             }
         });
-
     }
-
 }

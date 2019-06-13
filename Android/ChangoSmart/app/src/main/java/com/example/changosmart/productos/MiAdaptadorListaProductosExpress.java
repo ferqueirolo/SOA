@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.changosmart.R;
 
@@ -56,25 +55,20 @@ public class MiAdaptadorListaProductosExpress extends BaseAdapter {
         TextView tv_nombreProducto      = (TextView) myView.findViewById(R.id.textViewNombreProducto);
         TextView tv_categoriaProducto   = (TextView) myView.findViewById(R.id.textViewCategoriaProducto);
         TextView tv_precioProducto      = (TextView) myView.findViewById(R.id.textViewPrecioProducto);
-
+        TextView tv_cantidadProducto    = (TextView) myView.findViewById(R.id.textViewCantidadProducto);
 
         // Populo los datos de los campos del xml
         tv_nombreProducto.setText(listaProductos.get(i).getNombre());
         tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
-        tv_precioProducto.setText(String.valueOf(listaProductos.get(i).getCantidad()));
-
-        // Una accion si tocan en el nombre de la lista
-        myView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Muestro mensaje
-                Toast.makeText(v.getContext(),"A - A - A",Toast.LENGTH_SHORT).show();
-            }
-        });
+        String precioFormateado = "$ " + listaProductos.get(i).getPrecio();
+        tv_precioProducto.setText(precioFormateado);
+        String cantidadFormateada = "Cantidad: " + 1;
+        tv_cantidadProducto.setText(cantidadFormateada);
 
         // Retorno la vista generada
         return myView;
     }
+
     @Override
     public int getCount() {
         return listaProductos.size();
@@ -89,6 +83,8 @@ public class MiAdaptadorListaProductosExpress extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
+
+    public void removeItem(int position){ listaProductos.remove( position ); }
 
 
 }

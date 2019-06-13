@@ -53,4 +53,6 @@ public interface MyDao {
     @Query("DELETE FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
     public void eliminarProductoEnLista(String nombre_lista, String nombre_producto);
 
+    @Query("SELECT nombre, categoria, precio, cantidad FROM Productos WHERE nombre = :nombreProducto")
+    public Producto findByProductoExpress( String nombreProducto );
 }

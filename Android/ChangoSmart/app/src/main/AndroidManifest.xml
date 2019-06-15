@@ -45,7 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<service android:name=".ShakeService"></service>
         <activity
             android:name=".chango.Chango"
             android:label="Conducir Chango"

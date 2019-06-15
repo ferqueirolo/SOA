@@ -1,9 +1,7 @@
 package com.example.changosmart.listasCompras.detalleListas;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +23,6 @@ import com.example.changosmart.productos.TodosProductos;
 
 import java.util.ArrayList;
 
-import BD.ShakeDetector;
-
 public class DetalleLista extends AppCompatActivity {
     private ArrayList<LineaCompra> detalleLista;
     private ArrayList<LineaCompra> detalleListaFilt;
@@ -34,9 +30,6 @@ public class DetalleLista extends AppCompatActivity {
     private ListView listaProductosView;
 
     private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private ShakeDetector mShakeDetector;
-    private static final String TAG = "MainActivity";
     private ArrayAdapter adapter;
 
     public static MiAdaptadorDetalleLista miAdaptadorDetalleLista;
@@ -133,22 +126,7 @@ public class DetalleLista extends AppCompatActivity {
         //DEFINICION DEL BUSCADOR
         EditText Filter1 = (EditText) findViewById(R.id.searchFilter);
 
-        //Activo sensor shake
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mShakeDetector = new ShakeDetector();
-        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                /*
-                 * The following method, "handleShakeEvent(count):" is a stub //
-                 * method you would use to setup whatever you want done once the
-                 * device has been shook.
-                 */
-//                ShakeDetector.handleShakeEvent();
-            }
-        });
+
         Filter1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

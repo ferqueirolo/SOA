@@ -36,6 +36,7 @@ public class Chango extends AppCompatActivity {
 
         SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        Sensor myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         if (myProximitySensor == null) {
             //Si no se detecta sensor de proximidad;
@@ -43,6 +44,11 @@ public class Chango extends AppCompatActivity {
             mySensorManager.registerListener(proximitySensorEventListener,myProximitySensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
+        if (myLightSensor == null) {
+            //Si no se detecta sensor de proximidad;
+        } else {
+            mySensorManager.registerListener(lightSensorEventListener,myLightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
@@ -141,6 +147,27 @@ public class Chango extends AppCompatActivity {
         }
     };
 
+    SensorEventListener lightSensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+                if (event.values[0] < 10) {
+                    //El sensor no detecta luz
+
+                    //Encender luz carrito
+                } else {
+                    //El sensor detecta luz
+
+                    //Apagar luz carrito
+                }
+            }
+        }
+    };
 
     @Override
     protected void onPause() {

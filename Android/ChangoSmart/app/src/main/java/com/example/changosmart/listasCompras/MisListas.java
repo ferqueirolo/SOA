@@ -1,8 +1,13 @@
 package com.example.changosmart.listasCompras;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,17 +15,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MisListas extends AppCompatActivity {
     private ArrayList<ListaCompra> misListasCompras;
 
     private MiAdaptadorListaCompras adaptador;
+    private SensorEventListener proximitySensorEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class MisListas extends AppCompatActivity {
         adaptador = new MiAdaptadorListaCompras(this, misListasCompras);
 
         listaComprasView.setAdapter(adaptador);
+
 
         listaComprasView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

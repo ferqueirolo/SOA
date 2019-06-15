@@ -21,8 +21,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <include
-        layout="@layout/content_main"
-        android:layout_height="750dp" />
+        layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -32,5 +31,14 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/buttonColor"
         app:srcCompat="@drawable/support_18dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/moveChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/buttonColor"
+        app:srcCompat="@drawable/steering" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -15,6 +15,7 @@ public class ProductoTabla {
     private String nombre;
     private String categoria;
     private int precio;
+    private int cantidad;
 
     public ProductoTabla(String nombre, String categoria, int precio) {
         this.nombre = nombre;
@@ -50,4 +51,11 @@ public class ProductoTabla {
         this.precio = precio;
     }
 
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 }

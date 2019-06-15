@@ -3,12 +3,13 @@ package com.example.changosmart.productos;
 public class Producto {
     private String  nombre,
                     categoria;
-    private int precio;
+    private int precio,cantidad;
 
-    public Producto(String nombre, String categoria, int precio) {
+    public Producto(String nombre, String categoria, int precio, int cantidad) {
         this.nombre = nombre;
         this.categoria = categoria;
         this.precio = precio;
+        this.cantidad = cantidad;
     }
 
     public String getNombre() {
@@ -33,5 +34,13 @@ public class Producto {
 
     public void setPrecio(int precio) {
         this.precio = precio;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

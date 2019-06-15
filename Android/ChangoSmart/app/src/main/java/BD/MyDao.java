@@ -23,10 +23,10 @@ public interface MyDao {
     @Query("SELECT nombre_lista, supermercado, fecha_actualizacion FROM Mis_Listas_Compras ORDER BY fecha_actualizacion DESC")
     public List<ListaCompra> getListaCompras();
 
-    @Query("SELECT nombre, categoria, precio FROM Productos ORDER BY Nombre")
+    @Query("SELECT nombre, categoria, precio, cantidad FROM Productos ORDER BY Nombre")
     public  List<Producto> getProductos();
 
-    @Query("SELECT nombre, categoria, precio FROM Productos WHERE nombre = :nombreProducto")
+    @Query("SELECT nombre, categoria, precio, cantidad FROM Productos WHERE nombre = :nombreProducto")
     public  Producto getProducto(String nombreProducto);
 
     @Query("DELETE FROM Mis_Listas_Compras WHERE nombre_lista = :nombre_lista")
@@ -52,4 +52,7 @@ public interface MyDao {
 
     @Query("DELETE FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
     public void eliminarProductoEnLista(String nombre_lista, String nombre_producto);
+
+    @Query("SELECT nombre, categoria, precio, cantidad FROM Productos WHERE nombre = :nombreProducto")
+    public Producto findByProductoExpress( String nombreProducto );
 }

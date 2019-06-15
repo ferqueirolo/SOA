@@ -21,6 +21,8 @@
 
     <ListView
         android:id="@+id/listViewTodosProductos"
+        android:divider="@android:color/black"
+        android:dividerHeight="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

@@ -21,8 +21,6 @@ import com.example.changosmart.MainActivity;
 import com.example.changosmart.QR.QR;
 import com.example.changosmart.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -44,7 +42,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
         ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
         Producto prod = null;
         String valor;
-        TextView precioParcial = (TextView) findViewById(R.id.textView6);
+        TextView precioParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
 
         //Si lo obtenido es diferente de null lo voy a buscar a la base de productos para obtener el producto
         if( getIntent().getExtras() !=  null){
@@ -95,7 +93,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                TextView totalParcialView = (TextView) findViewById(R.id.textView6);
+                                TextView totalParcialView = (TextView) findViewById(R.id.textViewExpressTotalParcial);
                                 int totalParcial = listaProductos.get(position).getPrecio() /* * listaProductos.get(position).getCantidad()*/;
                                 listaProductos.remove(position);
                                 //Seteo nuevamente la vista del total con el cálculo del total anterior menos el precio del eliminado.
@@ -125,7 +123,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        TextView totalParcial = (TextView) findViewById(R.id.textView6);
+                                        TextView totalParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
                                         totalParcial.setText(String.valueOf(0));
                                         listaProductos.clear();
                                         adaptator.notifyDataSetChanged();

@@ -12,22 +12,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".compras.ComprarPorLista"
+            android:label="@string/title_activity_comprar_por_lista"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".productos.TodosProductos"
             android:label="@string/title_activity_todos_productos"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".QR.QR"
             android:label="QR"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".productos.AnadirProductoExpress"
             android:label="@string/title_activity_anadir_producto"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".listasCompras.CrearLista"
             android:label="@string/title_activity_crear_lista"
             android:theme="@style/AppTheme.NoActionBar" />
-		<activity
+        <activity
             android:name=".listasCompras.detalleListas.DetalleLista"
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -45,7 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<service android:name=".ShakeService"></service>
+
+        <service android:name=".ShakeService" />
+
         <activity
             android:name=".chango.Chango"
             android:label="Conducir Chango"

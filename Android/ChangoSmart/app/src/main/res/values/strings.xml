@@ -17,5 +17,6 @@
         <item>Editar Lista</item>
         <item>Eliminar Lista</item>
     </string-array>
-    <string name="title_activity_todos_productos">TodosProductos</string>
+    <string name="title_activity_todos_productos">Todos Productos</string>
+    <string name="title_activity_comprar_por_lista">Comprar Por Lista</string>
 </resources>

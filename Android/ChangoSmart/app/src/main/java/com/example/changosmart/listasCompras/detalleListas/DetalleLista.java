@@ -36,8 +36,7 @@ public class DetalleLista extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
-    private static final String TAG = "MainActivity";
-    private ArrayAdapter adapter;
+
 
     public static MiAdaptadorDetalleLista miAdaptadorDetalleLista;
 
@@ -66,10 +65,6 @@ public class DetalleLista extends AppCompatActivity {
         //Seteo el adaptador y le paso la lista de los productos
         miAdaptadorDetalleLista = new MiAdaptadorDetalleLista(this, detalleLista);
         listaProductosView.setAdapter(miAdaptadorDetalleLista);
-        /*      adapter = new ArrayAdapter<>(this, R.id.listViewDetalleLista, R.id.textView2, detalleLista );
-        listaProductosView.setTextFilterEnabled(true);
-        listaProductosView.setAdapter(adapter);
-        */
 
         buttonAgregarProductos.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.changosmart.Bluetooth.Bluetooth;
 import com.example.changosmart.listasCompras.MisListas;
 import com.example.changosmart.chango.Chango;
 import com.example.changosmart.productos.AnadirProducto;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(moveChango);
             }
         });
+
 
         // INICIALIZO LA BASE
         // HAY QUE CREAR UN HILO PARA QUE NO TRABAJE EN EL HILO PRINCIPAL

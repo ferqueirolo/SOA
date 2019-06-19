@@ -26,10 +26,14 @@
         <activity
             android:name=".productos.AnadirProductoExpress"
             android:label="@string/title_activity_anadir_producto"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".listasCompras.CrearLista"
             android:label="@string/title_activity_crear_lista"
+            android:theme="@style/AppTheme.NoActionBar" />
+		<activity
+            android:name=".listasCompras.detalleListas.DetalleLista"
+            android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".listasCompras.detalleListas.DetalleLista"
@@ -49,9 +53,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".ShakeService" />
-
         <activity
             android:name=".chango.Chango"
             android:label="Conducir Chango"

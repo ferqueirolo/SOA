@@ -4,7 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,8 +24,6 @@ import com.example.changosmart.R;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import BD.ShakeDetector;
 
 public class AnadirProductoExpress extends AppCompatActivity {
     private SensorManager mSensorManager;
@@ -140,24 +139,6 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 }
         );
 
-        //Activo sensor shake
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mShakeDetector = new ShakeDetector();
-        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                /*
-                 * The following method, "handleShakeEvent(count):" is a stub //
-                 * method you would use to setup whatever you want done once the
-                 * device has been shook.
-                 */
-                Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
-                startActivityForResult(openQr, 1);
-                finish();
-            }
-        });
 
             FloatingActionButton fab = findViewById(R.id.qr);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +151,33 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 }
             });
     }
+
+    SensorEventListener accelerometerSensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+
+                mAccelLast = mAccelCurrent;
+                mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+                float delta = mAccelCurrent - mAccelLast;
+                mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+
+                if (mAccel > 9) {
+                    Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                    startActivityForResult(openQr, 1);
+                    finish();
+                }
+            }
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

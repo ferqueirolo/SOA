@@ -1,5 +1,10 @@
 package com.example.changosmart.chango;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -100,6 +105,53 @@ public class Chango extends AppCompatActivity {
         });
     }
 
+    SensorEventListener proximitySensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                if (event.values[0] == 0) {
+                    //El sensor detecta algo próximo
+                    buttonUp.setEnabled(false);
+                    buttonLeft.setEnabled(false);
+                    buttonDown.setEnabled(false);
+                    buttonRight.setEnabled(false);
+                } else {
+                    buttonUp.setEnabled(true);
+                    buttonLeft.setEnabled(true);
+                    buttonDown.setEnabled(true);
+                    buttonRight.setEnabled(true);
+                }
+            }
+        }
+    };
+
+    SensorEventListener lightSensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+                if (event.values[0] < 10) {
+                    //El sensor no detecta luz
+
+                    //Encender luz carrito
+                } else {
+                    //El sensor detecta luz
+
+                    //Apagar luz carrito
+                }
+            }
+        }
+    };
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -111,4 +163,3 @@ public class Chango extends AppCompatActivity {
         super.onStop();
         this.finish();
     }
-}

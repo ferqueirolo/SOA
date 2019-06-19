@@ -75,7 +75,7 @@ public class Chango extends AppCompatActivity {
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
                 //Si el estado anterior era una A, significa que debe detenerse ( S ), sino, retrocedo (b)
-                if ( IdentificadorMovimiento == 'A' || IdentificadorMovimiento == 'I' || IdentificadorMovimiento == 'D' ) {
+                if (IdentificadorMovimiento == 'A' || IdentificadorMovimiento == 'I' || IdentificadorMovimiento == 'D') {
                     IdentificadorMovimiento = 'S';
                 } else {
                     IdentificadorMovimiento = 'B';
@@ -110,6 +110,7 @@ public class Chango extends AppCompatActivity {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // TODO Auto-generated method stub
         }
+
         @Override
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
@@ -135,6 +136,7 @@ public class Chango extends AppCompatActivity {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // TODO Auto-generated method stub
         }
+
         @Override
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
@@ -163,3 +165,4 @@ public class Chango extends AppCompatActivity {
         super.onStop();
         this.finish();
     }
+}

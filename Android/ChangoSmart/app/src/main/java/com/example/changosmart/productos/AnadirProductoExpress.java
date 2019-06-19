@@ -1,9 +1,10 @@
 package com.example.changosmart.productos;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -28,15 +29,30 @@ import java.util.Iterator;
 public class AnadirProductoExpress extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private ShakeDetector mShakeDetector;
+
     private MiAdaptadorListaProductosExpress adaptator;
     private static ArrayList<Producto> listaProductos = new ArrayList<Producto>();
+
+    private float mAccel; // acceleration apart from gravity
+    private float mAccelCurrent; // current acceleration including gravity
+    private float mAccelLast; // last acceleration including gravity
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anadir_producto_express);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+        if (myAccelerometerSensor == null) {
+            //Si no se detecta sensor acelerómetro;
+        } else {
+            mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
         Producto prod = null;

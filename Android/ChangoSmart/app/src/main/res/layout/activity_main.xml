@@ -20,17 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        layout="@layout/content_main" />
+    <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/bluetoothConfiguration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="16dp"
         app:backgroundTint="@color/buttonColor"
-        app:srcCompat="@drawable/support_18dp" />
+        app:srcCompat="@drawable/bluetooth" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/moveChart"

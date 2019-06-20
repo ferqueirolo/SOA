@@ -3,6 +3,10 @@
     package="com.example.changosmart">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -56,6 +60,10 @@
         <activity
             android:name=".chango.Chango"
             android:label="Conducir Chango"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".bluetooth.BluetoothSettings"
+            android:label="Administrar Bluetooth"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

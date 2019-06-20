@@ -49,6 +49,9 @@ public class DetalleLista extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_lista);
         Button buttonAgregarProductos = (Button) findViewById(R.id.buttonAgregarProductos);
 
+        //DEFINICION DEL BUSCADOR
+        EditText filter1 = (EditText) findViewById(R.id.searchFilter);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -125,8 +128,7 @@ public class DetalleLista extends AppCompatActivity {
             }
         });
 
-        //DEFINICION DEL BUSCADOR
-        EditText Filter1 = (EditText) findViewById(R.id.searchFilter);
+
 
         //Activo sensor shake
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -144,7 +146,7 @@ public class DetalleLista extends AppCompatActivity {
 //                ShakeDetector.handleShakeEvent();
             }
         });
-        Filter1.addTextChangedListener(new TextWatcher() {
+        filter1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -165,8 +167,9 @@ public class DetalleLista extends AppCompatActivity {
                         }
                     }
                 }
-                miAdaptadorDetalleLista = new MiAdaptadorDetalleLista(DetalleLista.this, detalleListaFilt);
-                listaProductosView.setAdapter(miAdaptadorDetalleLista);
+                detalleLista = detalleListaFilt;
+                miAdaptadorDetalleLista.setListaDetalle(detalleLista);
+                miAdaptadorDetalleLista.notifyDataSetChanged();
             }
 
             @Override

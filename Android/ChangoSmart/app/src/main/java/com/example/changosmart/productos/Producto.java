@@ -43,4 +43,24 @@ public class Producto {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
+
+    public void sumarCantidadActual(int cantidadNueva){
+        this.cantidad += cantidadNueva;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean sonIguales = false;
+        if (obj instanceof Producto){
+            Producto auxiliar = (Producto) obj;
+            sonIguales = this.getNombre().equals(auxiliar.getNombre());
+        }
+        return  sonIguales;
+    }
 }

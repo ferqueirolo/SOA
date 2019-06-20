@@ -28,6 +28,12 @@ public class Chango extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
+
+
+
+
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
         buttonLeft = findViewById(R.id.buttonLeft);
@@ -98,6 +104,7 @@ public class Chango extends AppCompatActivity {
                 // Pido reconectarse
             }
         });
+
     }
 
     @Override

@@ -1,10 +1,11 @@
-package com.example.changosmart.compras;
+package com.example.changosmart.compras.porLista;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -12,13 +13,10 @@ import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
 import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLista;
-import com.example.changosmart.productos.MiAdaptadorListaProductosExpress;
+import com.example.changosmart.compras.express.MiAdaptadorListaProductosExpress;
 import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import BD.MyAppDatabase;
 
 public class ComprarPorLista extends AppCompatActivity {
     private String nombreListaRecibido;
@@ -36,6 +34,7 @@ public class ComprarPorLista extends AppCompatActivity {
         Bundle bundleRecibido = this.getIntent().getExtras();
         // SE DEBE RECIBIR EN EL INTENT EL NOMBRE DE LA LISTA
         nombreListaRecibido = (String) bundleRecibido.get("NOMBRE_LISTA");
+        setContentView(R.layout.activity_comprar_por_lista);
 
         // Seteo los LISTVIEW
         listViewProductosAComprar   = (ListView) findViewById(R.id.listViewAComprarCompraLista);
@@ -43,7 +42,6 @@ public class ComprarPorLista extends AppCompatActivity {
 
         // Completo con los productos de la lista ya creada
         listaProductosAcomprar = (ArrayList) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
-
         // Inicializo la lista vacia
         listaProductosComprados = new ArrayList<Producto>();
 
@@ -60,10 +58,12 @@ public class ComprarPorLista extends AppCompatActivity {
 
 
 
-        setContentView(R.layout.activity_comprar_por_lista);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Lo dejo comentado porque lo vamos a usar para manejar el changoMas
+        /*
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +72,7 @@ public class ComprarPorLista extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
     }
 
 }

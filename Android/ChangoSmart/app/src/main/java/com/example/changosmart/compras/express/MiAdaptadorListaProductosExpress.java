@@ -1,4 +1,4 @@
-package com.example.changosmart.productos;
+package com.example.changosmart.compras.express;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.changosmart.R;
+import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
 
@@ -62,7 +63,7 @@ public class MiAdaptadorListaProductosExpress extends BaseAdapter {
         tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
         String precioFormateado = "$ " + listaProductos.get(i).getPrecio();
         tv_precioProducto.setText(precioFormateado);
-        String cantidadFormateada = "Cantidad: " + 1;
+        String cantidadFormateada = "Cantidad: " + listaProductos.get(i).getCantidad();
         tv_cantidadProducto.setText(cantidadFormateada);
 
         // Retorno la vista generada
@@ -85,6 +86,10 @@ public class MiAdaptadorListaProductosExpress extends BaseAdapter {
     }
 
     public void removeItem(int position){ listaProductos.remove( position ); }
+
+    public void actualizarCantidadAComprar(int position, Integer valueOf) {
+        this.listaProductos.get(position).setCantidad(valueOf);
+    }
 
 
 }

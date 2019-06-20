@@ -5,7 +5,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.changosmart.listasCompras.ListaCompra;
+import com.example.changosmart.listasCompras.misListas.ListaCompra;
 import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
 import com.example.changosmart.productos.Producto;
 

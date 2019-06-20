@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -56,7 +57,7 @@ public class TodosProductos extends AppCompatActivity {
 
         listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
         //DEFINICION DEL BUSCADOR
-        EditText Filter2 = (EditText) findViewById(R.id.searchFilter2);
+        EditText filter2 = (EditText) findViewById(R.id.searchFilter2);
         //Activo sensor shake
         Intent intent = new Intent(this, ShakeService.class);
         //Start Service
@@ -132,29 +133,38 @@ public class TodosProductos extends AppCompatActivity {
                 dialog.show();
             }
         });
-        Filter2.addTextChangedListener(new TextWatcher() {
+
+        // Agregamos el listener en el textView
+        filter2.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                // Tomamos todos los productos
                 listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+                // Lista que va almacenar las palabras que entren en el filtro
                 listaProductosFilt=new ArrayList<Producto>();
+                
                 if(charSequence.toString().equals("")) {
-                    // reset listview
+                    // Reseteamos la lista de los productos
                     listaProductosFilt = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
                 }
                 else {
+                    // Recorremos la lista para agregar aquellos productos que contentan la frase de busqueda 
                     for (Producto item : listaProductos) {
                         if ((item.getNombre().toLowerCase()).contains(charSequence.toString().toLowerCase())) {
                             listaProductosFilt.add(item);
                         }
                     }
                 }
-                miAdaptadorProductos = new MiAdaptadorProductos(TodosProductos.this,listaProductosFilt);
-                listaProductosView.setAdapter(miAdaptadorProductos);
+                // Seteamos la nueva lista filtrada en la lista de productos
+                listaProductos = listaProductosFilt;
+                // Actualizamos el adaptador
+                miAdaptadorProductos.setListaProductos(listaProductos);
+                // Notificamos los cambios para que los muestre en la listView
+                miAdaptadorProductos.notifyDataSetChanged();
             }
 
             @Override

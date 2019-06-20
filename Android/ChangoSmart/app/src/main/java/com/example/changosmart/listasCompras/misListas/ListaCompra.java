@@ -1,4 +1,4 @@
-package com.example.changosmart.listasCompras;
+package com.example.changosmart.listasCompras.misListas;
 
 public class ListaCompra {
     private String nombre_lista;

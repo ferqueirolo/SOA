@@ -47,8 +47,8 @@ public class MiAdaptadorDetalleLista extends BaseAdapter {
 
         nombreProducto.setText(listaDetalle.get(position).getNombreProducto());
         categoriaProducto.setText(listaDetalle.get(position).getCategoria());
-        precioProducto.setText(String.valueOf(listaDetalle.get(position).getPrecio()));
-        cantidadProducto.setText(String.valueOf(listaDetalle.get(position).getCantidadAComprar()));
+        precioProducto.setText("$ " + String.valueOf(listaDetalle.get(position).getPrecio()));
+        cantidadProducto.setText("Cantidad: " + String.valueOf(listaDetalle.get(position).getCantidadAComprar()));
 
         return myView;
     }

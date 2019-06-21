@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.QR.QR;
 import com.example.changosmart.R;
+import com.example.changosmart.chango.Chango;
 import com.example.changosmart.productos.Producto;
 
 import java.sql.SQLDataException;
@@ -49,7 +50,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
+        final ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
         Producto prod = null;
         String valor;
         precioParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
@@ -78,11 +79,9 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }
         }
 
-        //Obtengo el valor total parcial hasta el momento
-        int totalParcial = 0;
 
         //Le seteo el total al label de la vista.
-        precioParcial.setText(String.valueOf(totalParcial));
+        precioParcial.setText(String.valueOf(0));
 
         //Seteo el adaptador y le paso la lista de los productos
         adaptator = new MiAdaptadorListaProductosExpress(this, listaProductos);
@@ -106,10 +105,17 @@ public class AnadirProductoExpress extends AppCompatActivity {
                             if (etCantidad.getText().toString().isEmpty() || Integer.valueOf(etCantidad.getText().toString()) <= 0) {
                                 Toast.makeText(AnadirProductoExpress.this, "Error - Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
                             } else {
-                                adaptator.actualizarCantidadAComprar(position, Integer.valueOf(etCantidad.getText().toString()));
+                                int montoActual = Integer.valueOf(precioParcial.getText().toString()) - listaProductos.get(position).getTotalPorProducto();
+                                int nuevoMonto;
 
+                                listaProductos.get(position).setCantidad(Integer.valueOf(etCantidad.getText().toString()));
                                 adaptator.notifyDataSetChanged();
+
+                                nuevoMonto = listaProductos.get(position).getTotalPorProducto() + montoActual;
+
                                 dialog.dismiss();
+
+                                precioParcial.setText(String.valueOf(nuevoMonto));
                             }
                         }
                     });
@@ -128,36 +134,19 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     buttonEliminarAlertProducto.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            adaptator.removeItem(position);
+                            // HAY QUE AGREGAR EL ALERT DIALOG PARA RECIBIR LA BARRERA
+                            int montoActual = Integer.valueOf(precioParcial.getText().toString());
+                            int nuevoMonto = montoActual - listaProductos.get(position).getTotalPorProducto();
+
+                            listaProductos.remove(position);
                             adaptator.notifyDataSetChanged();
                             dialog.dismiss();
+
+                            precioParcial.setText(String.valueOf(nuevoMonto));
                         }
                     });
 
                     dialog.show();
-
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-
-                builder.setTitle("¿Desea eliminar el producto de la lista?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                TextView totalParcialView = (TextView) findViewById(R.id.textViewExpressTotalParcial);
-                                int totalParcial = listaProductos.get(position).getPrecio()
-                                listaProductos.remove(position);
-                                //Seteo nuevamente la vista del total con el cálculo del total anterior menos el precio del eliminado.
-                                totalParcialView.setText( String.valueOf( Integer.parseInt(totalParcialView.getText().toString()) - totalParcial));
-                                adaptator.notifyDataSetChanged();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder.show();*/
             }
         });
 
@@ -209,15 +198,25 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }
         });
 
-            FloatingActionButton fab = findViewById(R.id.qr);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
-                    // se abre la vista de la camara para escanear el código qr y agregar el producto.
-                    startActivityForResult(openQr, REQUEST_CODE_QR);
-                }
-            });
+        FloatingActionButton qrFab = findViewById(R.id.qr);
+        qrFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                // se abre la vista de la camara para escanear el código qr y agregar el producto.
+                startActivityForResult(openQr, REQUEST_CODE_QR);
+            }
+        });
+
+        FloatingActionButton changoFab = findViewById(R.id.moveChartCompraExpress);
+        changoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent openChango = new Intent(AnadirProductoExpress.this, Chango.class);
+                // se abre la vista de la camara para escanear el código qr y agregar el producto.
+                startActivity(openChango);
+            }
+        });
     }
 
     @Override
@@ -226,34 +225,71 @@ public class AnadirProductoExpress extends AppCompatActivity {
         if(resultCode==RESULT_OK){
             switch (requestCode) {
                 case REQUEST_CODE_QR:
-                    try {
-                        // A REALIZAR
-                        // CREAR UN ASYNCTASK QUE SI RECIBE UN 1 DE LA BARRERA DEL ARDUINO HAGA UN DISMISS DEL DIALOG Y TE AGREGUE EL PRODUCTO
-                        Log.d("AnadirProdcuto", data.getStringExtra("nombreProducto"));
-                        Producto productoNuevo = MainActivity.myAppDatabase.myDao().getProducto(data.getStringExtra("nombreProducto"));
-                        // SE VA A PODER EDITAR POR POPUP LA CANTIDAD
-                        productoNuevo.setCantidad(1);
-                        if(! listaProductos.contains(productoNuevo))
-                            anadirProducto(productoNuevo);
-                        else {
-                            Toast.makeText(this, "Ese producto ya está agregado a la lista.", Toast.LENGTH_SHORT).show();
-                            int i = 0;
-                            Iterator<Producto> iteratorProducto = listaProductos.iterator();
-                            Producto productoActual = iteratorProducto.next();
-                            while(iteratorProducto.hasNext() && ! productoNuevo.getNombre().equals(productoActual.getNombre())) {
-                                productoActual = iteratorProducto.next();
-                                i++;
-                            }
-                            listaProductos.get(i).sumarCantidadActual(1);
+                    // A REALIZAR
+                    // CREAR UN ASYNCTASK QUE SI RECIBE UN 1 DE LA BARRERA DEL ARDUINO HAGA UN DISMISS DEL DIALOG Y TE AGREGUE EL PRODUCTO
 
-                            int montoTotal = Integer.parseInt(precioParcial.getText().toString());
-                            precioParcial.setText(String.valueOf(listaProductos.get(i).getPrecio() + montoTotal));
-                            adaptator.notifyDataSetChanged();
-                        }
-                    }catch (SQLiteException e){
-                        Log.e("AnadirProdcuto", data.getStringExtra("Codigo de Producto Inexistente"));
+                    // Si pudo ingresar el nuevo producto tengo que esperar a las barreras
+                    final Producto productoNuevo = MainActivity.myAppDatabase.myDao().getProducto(data.getStringExtra("nombreProducto"));
+                    // SE VA A PODER EDITAR POR POPUP LA CANTIDAD
+                    if (productoNuevo != null){
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(AnadirProductoExpress.this);
+                        final View miAlertDialog = LayoutInflater.from(AnadirProductoExpress.this).inflate(R.layout.alertdialog_producto, null);
+                        final EditText etCantidad = (EditText) miAlertDialog.findViewById(R.id.editTextCantidadProducto);
+                        builder.setView(miAlertDialog);
+                        final AlertDialog dialog = builder.create();
+                        Button buttonAceptarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogProductoAceptar);
+
+                        buttonAceptarAlertProducto.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (etCantidad.getText().toString().isEmpty() || Integer.valueOf(etCantidad.getText().toString()) <= 0) {
+                                    Toast.makeText(AnadirProductoExpress.this, "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    int cantidadNueva = Integer.valueOf(etCantidad.getText().toString());
+                                    productoNuevo.setCantidad(cantidadNueva);
+                                    if(!listaProductos.contains(productoNuevo)){
+                                        anadirProducto(productoNuevo);
+                                    } else {
+                                        Toast.makeText(AnadirProductoExpress.this, "Ese producto ya está agregado a la lista.", Toast.LENGTH_SHORT).show();
+                                        int i = 0;
+                                        Iterator<Producto> iteratorProducto = listaProductos.iterator();
+                                        Producto productoActual = iteratorProducto.next();
+                                        while(iteratorProducto.hasNext() && ! productoNuevo.getNombre().equals(productoActual.getNombre())) {
+                                            productoActual = iteratorProducto.next();
+                                            i++;
+                                        }
+                                        int montoTotal = Integer.parseInt(precioParcial.getText().toString()) - listaProductos.get(i).getTotalPorProducto();
+                                        listaProductos.get(i).sumarCantidadActual(cantidadNueva);
+                                        precioParcial.setText(String.valueOf(listaProductos.get(i).getTotalPorProducto() + montoTotal));
+                                        adaptator.notifyDataSetChanged();
+                                    }
+                                    dialog.dismiss();
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(AnadirProductoExpress.this);
+
+                                    builder.setTitle("Ingrese el producto al chango");
+                                    AlertDialog dialogIngresarProd = builder.create();
+                                    dialogIngresarProd.setCancelable(false);
+                                    dialogIngresarProd.setCanceledOnTouchOutside(false);
+                                    dialogIngresarProd.show();
+                                }
+                            }
+                        });
+
+                        Button buttonCancelarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogProductoCancelar);
+
+                        buttonCancelarAlertProducto.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                    }else{
+                        Toast.makeText(this, "Este producto no se encuentra registrado en el sistema.", Toast.LENGTH_SHORT).show();
                     }
-                    break;
+
+                break;
                 default:
                     Intent refreshActivity = new Intent(this, AnadirProductoExpress.class);
                     startActivity(refreshActivity);
@@ -264,12 +300,16 @@ public class AnadirProductoExpress extends AppCompatActivity {
 
     private void anadirProducto(Producto producto){
         int montoTotal = Integer.parseInt(precioParcial.getText().toString());
-        montoTotal += producto.getPrecio();
+        montoTotal += producto.getTotalPorProducto();
         precioParcial.setText(String.valueOf(montoTotal));
-
         listaProductos.add(producto);
-        adaptator.setListaProductos(listaProductos);
         adaptator.notifyDataSetChanged();
 
+    }
+
+    private boolean nuevoProductoAIngresar(Intent data){
+        boolean nuevoProductoIngresado = false;
+
+        return  nuevoProductoIngresado;
     }
 }

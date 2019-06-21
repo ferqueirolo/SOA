@@ -53,6 +53,7 @@ public class Producto {
         this.cantidad += cantidadNueva;
     }
 
+    public int getTotalPorProducto(){ return this.cantidad * this.precio;}
 
     @Override
     public boolean equals(Object obj) {

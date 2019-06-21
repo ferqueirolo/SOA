@@ -53,12 +53,11 @@
 
     <TextView
         android:id="@+id/textViewCantidadProducto"
-        android:layout_width="85dp"
-        android:layout_height="20dp"
+        android:layout_width="119dp"
+        android:layout_height="25dp"
         android:layout_marginEnd="52dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:text="Cantidad"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2"

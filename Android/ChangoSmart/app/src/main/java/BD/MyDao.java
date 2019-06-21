@@ -44,6 +44,9 @@ public interface MyDao {
     @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidad + cantidadAComprar WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
     public void actualizarCantidadAComprar(String nombre_lista, String nombre_producto, int cantidad);
 
+    @Query("UPDATE Detalle_Lista_Compra SET cantidadAComprar = :cantidad WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
+    public void setNuevaCantidadAComprar(String nombre_lista, String nombre_producto, int cantidad);
+
     @Query("SELECT 1 FROM Detalle_Lista_Compra WHERE nombre_lista = :nombre_lista AND nombre_producto = :nombre_producto")
     public int existeProductoEnLista(String nombre_lista, String nombre_producto);
 

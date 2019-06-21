@@ -23,16 +23,6 @@
     <include layout="@layout/content_comprar_por_lista" />
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/qr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        app:backgroundTint="@color/buttonColor"
-        app:srcCompat="@drawable/qrcode" />
-
-
 </android.support.design.widget.CoordinatorLayout>
 
 

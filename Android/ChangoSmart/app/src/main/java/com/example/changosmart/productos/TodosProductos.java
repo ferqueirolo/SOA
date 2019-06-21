@@ -117,8 +117,8 @@ public class TodosProductos extends AppCompatActivity {
                                 MainActivity.myAppDatabase.myDao().actualizarCantidadAComprar(nombreListaRecibido, listaProductos.get(position).getNombre(),  Integer.valueOf(etCantidad.getText().toString()));
                                 Toast.makeText(TodosProductos.this, "Producto modificado en la lista", Toast.LENGTH_SHORT).show();
                             }
+                            dialog.dismiss();
                         }
-                        dialog.dismiss();
                     }
                 });
 

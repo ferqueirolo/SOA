@@ -9,33 +9,45 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 
 import java.util.ArrayList;
 
+import BT.Bluetooth;
+
 //Clase para manejar el bluetooth, va a servir para gestionar el mismo en toda la app.
 public class BluetoothSettings extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    static BluetoothAdapter miAdaptadorBluetooth;
+    private static BluetoothAdapter miAdaptadorBluetooth;
 
-    static ArrayList<BluetoothDevice> listaDispositivos;
+    private ArrayList<BluetoothDevice> listaDispositivos;
 
-    static MiAdaptadorDispositivosBluetooth adaptadorBluetooth;
+    private static MiAdaptadorDispositivosBluetooth adaptadorBluetooth;
 
-    ListView listaDispositivosView;
+    private ListView listaDispositivosView;
 
-    TextView estadoBluetooth;
+    private TextView estadoBluetooth;
 
-    static boolean estadoBluetoothGlobal = false;
+    private Bluetooth bluetoothLocalInstance;
+
+    private static BluetoothDevice pairDevice;
+
+    private boolean operacionExistosa;
+
+    private boolean emparejamientoExitoso;
 
     //Se crea un BroadcastReceiver para las acciones del Bluetooth
     private final BroadcastReceiver miBroadcastReceiver1 = new BroadcastReceiver() {
@@ -45,16 +57,17 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
             //Cuando se encuentra una acción del bt y es que cambió
             if ( action.equals(miAdaptadorBluetooth.ACTION_STATE_CHANGED)){
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, miAdaptadorBluetooth.ERROR);
-
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:
                         Log.d("", "onReceive: STATE OFF");
+                        operacionExistosa = false;
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
                         Log.d("", "onReceive: STATE TURNING OFF");
                         break;
                     case BluetoothAdapter.STATE_ON:
                         Log.d("", "onReceive: STATE ON");
+                        operacionExistosa = true;
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
                         Log.d("", "onReceive: STATE TURNING ON");
@@ -96,15 +109,23 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
                 //Una vez que tengo el dispositivo, infomo el estado de la acción.
                 //Bonded es si la conexión se estableció.
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED){
-                    Log.d("", "[BroadcasReceiver]: ");
+                    Log.d("", "[BroadcasReceiver]: Emparejado");
+                    //Acá debería mostrar un toast indicando que está emparejado ya.
+                    mostrarNotificacionBT("Emparejamiento existoso!");
+                    emparejamientoExitoso = true;
                 }
                 //Bonding es en proceso.
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING){
-                    Log.d("", "[BroadcasReceiver]: ");
+                    Log.d("", "[BroadcasReceiver]: Emparejando");
+                    //Acá podría indicar que está emparejando.
+                    mostrarNotificacionBT("Emparejando...");
                 }
                 //None es si la conexión se rompió por algún motivo.
                 if (device.getBondState() == BluetoothDevice.BOND_NONE){
-                    Log.d("", "[BroadcasReceiver]: ");
+                    Log.d("", "[BroadcasReceiver]: Algo salió mal!");
+                    //Acá debería indicar que algo salió mal.
+                    mostrarNotificacionBT("Oops.. Emparejamiento fallido.");
+                    emparejamientoExitoso = false;
                 }
             }
         }
@@ -114,18 +135,29 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
     protected void onDestroy() {
         super.onDestroy();
         Log.d("", "[OnDestoy]: Dejo de verificar por los receivers");
-        unregisterReceiver(miBroadcastReceiver1);
-        unregisterReceiver(miBroadcastReceiver2);
-        unregisterReceiver(miBroadcastReceiver3);
+        try {
+            unregisterReceiver(miBroadcastReceiver1);
+        }catch(Exception ex){}
+        try {
+            unregisterReceiver(miBroadcastReceiver2);
+        }catch(Exception ex){}
+        try {
+            unregisterReceiver(miBroadcastReceiver3);
+        }catch(Exception ex){}
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Obtengo la instancia del main para modificarla.
+        bluetoothLocalInstance = getIntent().getExtras().getParcelable("btInstance");
+
         setContentView(R.layout.activity_bluetooth_settings);
         Button btnActivarBt = (Button) findViewById(R.id.activarBluetooth);
         Button btnDesactivarBt = (Button) findViewById(R.id.desactivarBluetooth);
         Button btnMostrarDispositivos = (Button) findViewById(R.id.mostrarDispositivos);
+        Button btnVolver = (Button) findViewById(R.id.volver);
         estadoBluetooth = (TextView) findViewById(R.id.textView6);
 
         listaDispositivosView = (ListView) findViewById(R.id.listaDispositivos);
@@ -136,45 +168,67 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
         registerReceiver(miBroadcastReceiver3, filter);
 
         miAdaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
+        operacionExistosa = false;
+        emparejamientoExitoso = false;
 
-        if (miAdaptadorBluetooth.isEnabled()) {
-            estadoBluetooth.setText("Encendido");
-        }else {
-            estadoBluetooth.setText("Apagado");
-        }
-        
-        listaDispositivosView.setOnItemClickListener(BluetoothSettings.this);
+        if (bluetoothLocalInstance != null ){
+            if (miAdaptadorBluetooth.isEnabled()) {
+                estadoBluetooth.setText("Encendido");
+                bluetoothLocalInstance.setMyBluetoothStatus(true);
+            }else {
+                estadoBluetooth.setText("Apagado");
+                bluetoothLocalInstance.setMyBluetoothStatus(false);
+            }
 
-        //Se activa el bluetooth en el dispositivo
-        btnActivarBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            listaDispositivosView.setOnItemClickListener(BluetoothSettings.this);
+
+            //Se activa el bluetooth en el dispositivo
+            btnActivarBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     activarBT();
-            }
-        });
+                }
+            });
 
-        //Se desactiva el bluetooth en el dispositivo
-        btnDesactivarBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            //Se desactiva el bluetooth en el dispositivo
+            btnDesactivarBt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     desactivarBT();
-            }
-        });
+                }
+            });
 
-        //Se muestran los dispositivos que están con el bt activado.
-        btnMostrarDispositivos.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View view) {
+            //Se muestran los dispositivos que están con el bt activado.
+            btnMostrarDispositivos.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View view) {
+                    listaDispositivos.clear();
 
-                //Se verifica que se pueda usar el bt en el dispositivo
-                checkBTPermissions();
+                    //Se verifica que se pueda usar el bt en el dispositivo
+                    checkBTPermissions();
 
-                miAdaptadorBluetooth.startDiscovery();
-                IntentFilter dispositivosEncontradosIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                registerReceiver(miBroadcastReceiver2, dispositivosEncontradosIntent);
-            }
-        });
+                    mostrarNotificacionBT("Buscando dispositivos...");
+                    miAdaptadorBluetooth.startDiscovery();
+                    IntentFilter dispositivosEncontradosIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                    registerReceiver(miBroadcastReceiver2, dispositivosEncontradosIntent);
+                }
+            });
+
+            btnVolver.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view){
+                    Intent backToFather = new Intent();
+                    backToFather.putExtra("btInstanceBack", bluetoothLocalInstance);
+                    if (emparejamientoExitoso){
+                        setResult(RESULT_OK, backToFather);
+                    }else{
+                        setResult(RESULT_CANCELED, backToFather);
+                    }
+                    finish();
+                }
+            });
+        }
     }
 
     public void activarBT(){
@@ -189,7 +243,9 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
             IntentFilter BTIntent = new IntentFilter(miAdaptadorBluetooth.ACTION_STATE_CHANGED);
             registerReceiver(miBroadcastReceiver1, BTIntent);
 
+            mostrarNotificacionBT("Bluetooth activado!");
             estadoBluetooth.setText("Encendido");
+            bluetoothLocalInstance.setMyBluetoothStatus(true);
         }
     }
 
@@ -204,8 +260,25 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
             IntentFilter BTIntent = new IntentFilter(miAdaptadorBluetooth.ACTION_STATE_CHANGED);
             registerReceiver(miBroadcastReceiver1, BTIntent);
 
+            mostrarNotificacionBT("Bluetooth desactivado!");
             estadoBluetooth.setText("Apagado");
+            listaDispositivos.clear();
+            bluetoothLocalInstance.setMyPairDevice(null);
+            bluetoothLocalInstance.setMyBluetoothStatus(false);
+            adaptadorBluetooth = new MiAdaptadorDispositivosBluetooth(this, listaDispositivos);
+            listaDispositivosView.setAdapter(adaptadorBluetooth);
         }
+    }
+
+    //Se encarga de mostrar una leve notificación de lo que está pasando por atrás con el bluetooth.
+    public void mostrarNotificacionBT(String mensaje){
+        Toast toast =
+                Toast.makeText(getApplicationContext(),
+                        mensaje, Toast.LENGTH_SHORT);
+
+        toast.setGravity(Gravity.CENTER,0,0);
+
+        toast.show();
     }
 
     //Esto verifica la versión de android para ver si tiene bluetooth.
@@ -227,14 +300,19 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
 
         Log.d("", "[OnDeviceClick]: Dispositivo seleccionado");
         String deviceName = listaDispositivos.get(i).getName();
+        if (deviceName == null || deviceName.equals("")) {
+            deviceName = "Nombre protegido";
+        }
         String deviceAdress = listaDispositivos.get(i).getAddress();
 
         Log.d("", "[OnDeviceClick]: Dispositivo:" + deviceName + " - " + deviceAdress);
 
         //Creamos un bond para el receiver.
-        if ( Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.d("", "[OnDeviceClick]: Inicializando paring con el dispositivo: " + deviceName);
             listaDispositivos.get(i).createBond();
         }
+
+        bluetoothLocalInstance.setPairDevice(listaDispositivos.get(i));
     }
 }

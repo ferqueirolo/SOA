@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.changosmart.bluetooth.BluetoothSettings;
 import com.example.changosmart.chango.Chango;
 import com.example.changosmart.listasCompras.MisListas;
 import com.example.changosmart.productos.AnadirProductoExpress;
@@ -19,23 +22,34 @@ import java.util.List;
 
 import BD.MyAppDatabase;
 import BD.ProductoTabla;
+import BT.Bluetooth;
 
 public class MainActivity extends AppCompatActivity {
     public static MyAppDatabase myAppDatabase;
     private boolean primeraEjecucion = false;
+    private Bluetooth bluetoothInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Creo la primera instancia del BT, debe perdurar en toda la app, si se cierra, se pierde.
+        bluetoothInstance = new Bluetooth();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Botón para abrir la configuración del bluetooth
         FloatingActionButton btSettings = findViewById(R.id.bluetoothConfiguration);
         btSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Abro vista bt
+                Intent btSettings = new Intent( view.getContext(), BluetoothSettings.class);
+                //Le paso la instancia del bluetooth para que tenga los valores.
+                btSettings.putExtra("btInstance", bluetoothInstance);
+                startActivityForResult(btSettings, 17);
             }
         });
 
@@ -103,5 +117,22 @@ public class MainActivity extends AppCompatActivity {
     public void openListExpress (View view){
         Intent openListExpress = new Intent(this, AnadirProductoExpress.class);
         startActivity(openListExpress);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 17) {
+            if(resultCode == RESULT_OK) {
+                bluetoothInstance = data.getExtras().getParcelable("btInstanceBack");
+                Toast toast =
+                        Toast.makeText(getApplicationContext(),
+                                "El dispositivo conectado es: " + bluetoothInstance.getPairDevice().getName(), Toast.LENGTH_SHORT);
+
+                toast.setGravity(Gravity.CENTER,0,0);
+
+                toast.show();
+            }
+        }
     }
 }

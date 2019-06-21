@@ -57,7 +57,12 @@ public class MiAdaptadorDispositivosBluetooth extends BaseAdapter {
         TextView tv_adressDispositivo   = (TextView) myView.findViewById(R.id.adressDispositivo);
 
         // Populo los datos de los campos del xml
-        tv_nombreDispositivo.setText(listaDispositivos.get(i).getName());
+        String nombreFinal = listaDispositivos.get(i).getName();
+        if (nombreFinal == null || nombreFinal.equals("")){
+            nombreFinal = "Nombre protegido";
+        }
+
+        tv_nombreDispositivo.setText(nombreFinal);
         tv_adressDispositivo.setText(listaDispositivos.get(i).getAddress());
 
         // Retorno la vista generada

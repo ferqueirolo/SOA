@@ -27,6 +27,7 @@ import com.example.changosmart.R;
 import java.util.ArrayList;
 
 import BT.Bluetooth;
+import BT.BluetoothConnectionService;
 
 //Clase para manejar el bluetooth, va a servir para gestionar el mismo en toda la app.
 public class BluetoothSettings extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -40,6 +41,8 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
     private ListView listaDispositivosView;
 
     private TextView estadoBluetooth;
+
+    private TextView conectadoADispositivo;
 
     private Bluetooth bluetoothLocalInstance;
 
@@ -106,24 +109,22 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
             if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                //Una vez que tengo el dispositivo, infomo el estado de la acción.
+                //Una vez que se tiene el dispositivo, infomo el estado de la acción.
                 //Bonded es si la conexión se estableció.
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED){
                     Log.d("", "[BroadcasReceiver]: Emparejado");
-                    //Acá debería mostrar un toast indicando que está emparejado ya.
                     mostrarNotificacionBT("Emparejamiento existoso!");
+                    conectadoADispositivo.setText(device.getName().isEmpty() ? "Nombre protegido" : device.getName());
                     emparejamientoExitoso = true;
                 }
                 //Bonding es en proceso.
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING){
                     Log.d("", "[BroadcasReceiver]: Emparejando");
-                    //Acá podría indicar que está emparejando.
                     mostrarNotificacionBT("Emparejando...");
                 }
                 //None es si la conexión se rompió por algún motivo.
                 if (device.getBondState() == BluetoothDevice.BOND_NONE){
                     Log.d("", "[BroadcasReceiver]: Algo salió mal!");
-                    //Acá debería indicar que algo salió mal.
                     mostrarNotificacionBT("Oops.. Emparejamiento fallido.");
                     emparejamientoExitoso = false;
                 }
@@ -159,6 +160,7 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
         Button btnMostrarDispositivos = (Button) findViewById(R.id.mostrarDispositivos);
         Button btnVolver = (Button) findViewById(R.id.volver);
         estadoBluetooth = (TextView) findViewById(R.id.textView6);
+        conectadoADispositivo = (TextView) findViewById(R.id.textView9);
 
         listaDispositivosView = (ListView) findViewById(R.id.listaDispositivos);
         listaDispositivos = new ArrayList<BluetoothDevice>();
@@ -174,9 +176,15 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
         if (bluetoothLocalInstance != null ){
             if (miAdaptadorBluetooth.isEnabled()) {
                 estadoBluetooth.setText("Encendido");
+                if (bluetoothLocalInstance.getPairDevice() != null){
+                    conectadoADispositivo.setText( bluetoothLocalInstance.getPairDevice().getName());
+                } else {
+                    conectadoADispositivo.setText("");
+            }
                 bluetoothLocalInstance.setMyBluetoothStatus(true);
             }else {
                 estadoBluetooth.setText("Apagado");
+                conectadoADispositivo.setText("");
                 bluetoothLocalInstance.setMyBluetoothStatus(false);
             }
 
@@ -262,6 +270,7 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
 
             mostrarNotificacionBT("Bluetooth desactivado!");
             estadoBluetooth.setText("Apagado");
+            conectadoADispositivo.setText("");
             listaDispositivos.clear();
             bluetoothLocalInstance.setMyPairDevice(null);
             bluetoothLocalInstance.setMyBluetoothStatus(false);
@@ -311,8 +320,9 @@ public class BluetoothSettings extends AppCompatActivity implements AdapterView.
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.d("", "[OnDeviceClick]: Inicializando paring con el dispositivo: " + deviceName);
             listaDispositivos.get(i).createBond();
-        }
 
-        bluetoothLocalInstance.setPairDevice(listaDispositivos.get(i));
+            //Le asigno el dispositivo emparejado a la instancia del bt.
+            bluetoothLocalInstance.setPairDevice(listaDispositivos.get(i));
+        }
     }
 }

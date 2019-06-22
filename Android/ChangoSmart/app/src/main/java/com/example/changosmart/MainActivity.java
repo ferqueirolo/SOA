@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent moveChango = new Intent( view.getContext(), Chango.class);
+                moveChango.putExtra("btInstance", bluetoothInstance);
                 startActivity(moveChango);
             }
         });
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             cargarProductos();
             primeraEjecucion = true;
         }
-
     }
 
     private void cargarProductos() {
@@ -111,11 +111,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendMessage (View view){
         Intent openMisListas = new Intent(this, MisListas.class);
+        openMisListas.putExtra("btInstance", bluetoothInstance);
         startActivity(openMisListas);
     }
 
     public void openListExpress (View view){
         Intent openListExpress = new Intent(this, AnadirProductoExpress.class);
+        openListExpress.putExtra("btInstance", bluetoothInstance);
         startActivity(openListExpress);
     }
 

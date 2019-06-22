@@ -1,17 +1,21 @@
 package com.example.changosmart.productos;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,12 +30,21 @@ import com.example.changosmart.R;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import BT.Bluetooth;
+import BT.BluetoothConnectionService;
+
 public class AnadirProductoExpress extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
 
     private MiAdaptadorListaProductosExpress adaptator;
     private static ArrayList<Producto> listaProductos = new ArrayList<Producto>();
+
+    private Bluetooth bluetoothInstance;
+
+    private BluetoothConnectionService bluetoothConnection;
+
+    private byte[] commandInBytes;
 
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
@@ -47,6 +60,27 @@ public class AnadirProductoExpress extends AppCompatActivity {
         SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        //Se instancia el bluetooth en base a la conexión actual
+        bluetoothInstance = getIntent().getExtras().getParcelable("btInstance");
+
+        //Se verifica que se tenga una conexión activa de bluetooth.
+        if (bluetoothInstance != null){
+            //Se inicia el socket del bt para escuchar mensajes del arduino.
+            bluetoothConnection = new BluetoothConnectionService(getApplicationContext());
+            if (bluetoothInstance.getPairDevice() != null){
+                bluetoothConnection.startClient( bluetoothInstance.getPairDevice(), bluetoothConnection.getDeviceUUID());
+                //Registro el evento del broadcast para detectar el provider que genera la lectura de un dato enviado por el arduino (BluetoothServiceConnection)
+                LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, new IntentFilter("IncomingMessage"));
+            }else {
+                //Se informa al usuario que debe emparejarse con un dispositivo.
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor..." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
+            }
+        }
 
         if (myAccelerometerSensor == null) {
             //Si no se detecta sensor acelerómetro;
@@ -155,18 +189,50 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 }
         );
 
-
-            FloatingActionButton fab = findViewById(R.id.qr);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        FloatingActionButton fab = findViewById(R.id.qr);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bluetoothInstance.getPairDevice() != null){
                     Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
                     // se abre la vista de la camara para escanear el código qr y agregar el producto.
                     startActivityForResult(openQr, 1);
                     finish();
+                }else {
+                    //Se informa al usuario que debe emparejarse con un dispositivo.
+                    Toast toast1 =
+                            Toast.makeText(getApplicationContext(), "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor..." , Toast.LENGTH_SHORT);
+
+                    toast1.setGravity(Gravity.CENTER,0,0);
+
+                    toast1.show();
                 }
-            });
+        }});
     }
+
+    BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Acá se recibe el mensaje del arduino y se evalua si es In o Out
+            String text = intent.getStringExtra("theMessage");
+
+            if (text.equals("IN")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Ingresó un producto al chango." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
+            }else if (text.equals("OUT")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Salió un producto del chango." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
+            }
+        }
+    };
 
     SensorEventListener accelerometerSensorEventListener = new SensorEventListener() {
         @Override

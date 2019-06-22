@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.nio.charset.Charset;
+
 //Clase global de bluetooth, tiene que implementar Parcelable para pasarse a través de las activities.
 public class Bluetooth extends Application implements Parcelable {
 
@@ -14,8 +16,6 @@ public class Bluetooth extends Application implements Parcelable {
 
     //Controlar el estado actual del bluetooth local.
     private boolean bluetoothActivado;
-
-    //acá deberían ir los sockets y demás (falta implementar).
 
     //Constructor que obtiene el estado por defecto del dispostivo;
     public Bluetooth(){
@@ -46,18 +46,6 @@ public class Bluetooth extends Application implements Parcelable {
     //Setea el estado actual del bluetooth.
     public void setMyBluetoothStatus(boolean status){
         bluetoothActivado = status;
-    }
-
-    //Envía información al dispositivo emparejado ( no debería esperar nada, envía y sigue).
-    public boolean sendDataToPairDevice(String data){
-        //Falta implementar
-        return false;
-    }
-
-    //Recive información del dispositivo emparejado (debería quedarse esperando una respuesta
-    public String receiveDataFromPairDevice(){
-        //Falta implementar
-        return "";
     }
 
     @Override
@@ -98,7 +86,7 @@ public class Bluetooth extends Application implements Parcelable {
     }
 
     public boolean getBluetoothStatus() {
-        return bluetoothActivado;
+        return this.bluetoothActivado;
     }
 
     public void setBluetoothStatus(boolean status) {

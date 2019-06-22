@@ -1,20 +1,28 @@
 package com.example.changosmart.chango;
 
-import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.changosmart.R;
 
+import java.nio.charset.Charset;
+
+import BT.Bluetooth;
+import BT.BluetoothConnectionService;
+
 //Clase para manejar el movimiento del chango
 public class Chango extends AppCompatActivity {
+
+    private final String TAG = "Chango";
 
     private Button buttonUp;
 
@@ -24,7 +32,13 @@ public class Chango extends AppCompatActivity {
 
     private Button buttonRight;
 
-    private char IdentificadorMovimiento;
+    private char establecerComandoMovimiento;
+
+    private Bluetooth bluetoothInstance;
+
+    private BluetoothConnectionService bluetoothConnection;
+
+    private byte[] commandInBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +53,27 @@ public class Chango extends AppCompatActivity {
         buttonDown = findViewById(R.id.buttonDown);
         buttonRight = findViewById(R.id.buttonRight);
 
+        //Instancio el bt actual en el activity
+        bluetoothInstance = getIntent().getExtras().getParcelable("btInstance");
+
+        if (bluetoothInstance.getPairDevice() != null){
+            bluetoothConnection = new BluetoothConnectionService(getApplicationContext());
+            //Si tengo un disposito conectado comienzo la conexión.
+            bluetoothConnection.startClient(bluetoothInstance.getPairDevice(), bluetoothConnection.getDeviceUUID());
+        }
+
         //Si se presiona el boton avanzar
         buttonUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'A';
+                if (establecerComandoMovimiento == 'S' || establecerComandoMovimiento == 'I' || establecerComandoMovimiento == 'D') {
+                    establecerComandoMovimiento = 'A';
+                } else {
+                    establecerComandoMovimiento = 'B';
+                }
 
-                // Pregunto por la conexión bluetooth
-                // Le paso el caracter al arduino.
-
-                //Si no estoy conectado al bluetooth o se pierde la señal
-                // Pido reconectarse
+                enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
 
@@ -59,13 +82,9 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'I';
+                establecerComandoMovimiento = 'I';
 
-                // Pregunto por la conexión bluetooth
-                // Le paso el caracter al arduino.
-
-                //Si no estoy conectado al bluetooth o se pierde la señal
-                // Pido reconectarse
+                enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
 
@@ -75,17 +94,13 @@ public class Chango extends AppCompatActivity {
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
                 //Si el estado anterior era una A, significa que debe detenerse ( S ), sino, retrocedo (b)
-                if (IdentificadorMovimiento == 'A' || IdentificadorMovimiento == 'I' || IdentificadorMovimiento == 'D') {
-                    IdentificadorMovimiento = 'S';
+                if (establecerComandoMovimiento == 'A' || establecerComandoMovimiento == 'I' || establecerComandoMovimiento == 'D') {
+                    establecerComandoMovimiento = 'S';
                 } else {
-                    IdentificadorMovimiento = 'B';
+                    establecerComandoMovimiento = 'B';
                 }
 
-                // Pregunto por la conexión bluetooth
-                // Le paso el caracter al arduino.
-
-                //Si no estoy conectado al bluetooth o se pierde la señal
-                // Pido reconectarse
+                enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
 
@@ -94,15 +109,37 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                IdentificadorMovimiento = 'D';
+                establecerComandoMovimiento = 'D';
 
-                // Pregunto por la conexión bluetooth
-                // Le paso el caracter al arduino.
-
-                //Si no estoy conectado al bluetooth o se pierde la señal
-                // Pido reconectarse
+                enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
+    }
+
+    //Método para envíar información al arduino.
+    public void enviarInformacionMovimiento(char direccionMovimiento){
+        if (bluetoothInstance.getPairDevice() == null){
+            //Si no estoy conectado al bluetooth o se pierde la señal
+            // Pido reconectarse
+            Toast toast1 =
+                    Toast.makeText(getApplicationContext(),
+                            "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor... ", Toast.LENGTH_SHORT);
+
+            toast1.setGravity(Gravity.CENTER,0,0);
+
+            toast1.show();
+        } else {
+            Toast toast1 =
+                    Toast.makeText(getApplicationContext(), "Caracter a enviar: " + direccionMovimiento, Toast.LENGTH_SHORT);
+
+            toast1.setGravity(Gravity.CENTER,0,0);
+
+            toast1.show();
+
+            commandInBytes = String.valueOf(direccionMovimiento).getBytes(Charset.defaultCharset());
+
+            bluetoothConnection.write(commandInBytes);
+        }
     }
 
     SensorEventListener proximitySensorEventListener = new SensorEventListener() {
@@ -121,6 +158,9 @@ public class Chango extends AppCompatActivity {
                     buttonLeft.setEnabled(false);
                     buttonDown.setEnabled(false);
                     buttonRight.setEnabled(false);
+                    //Envía un mensaje al arduino para que frene.
+                    commandInBytes = String.valueOf('S').getBytes(Charset.defaultCharset());
+                    bluetoothConnection.write(commandInBytes);
                 } else {
                     buttonUp.setEnabled(true);
                     buttonLeft.setEnabled(true);
@@ -143,12 +183,14 @@ public class Chango extends AppCompatActivity {
             if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
                 if (event.values[0] < 10) {
                     //El sensor no detecta luz
-
                     //Encender luz carrito
+                    commandInBytes = String.valueOf('L').getBytes(Charset.defaultCharset());
+                    bluetoothConnection.write(commandInBytes);
                 } else {
                     //El sensor detecta luz
-
                     //Apagar luz carrito
+                    commandInBytes = String.valueOf('L').getBytes(Charset.defaultCharset());
+                    bluetoothConnection.write(commandInBytes);
                 }
             }
         }
@@ -164,5 +206,15 @@ public class Chango extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         this.finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 18) {
+            if(resultCode == RESULT_OK) {
+                bluetoothInstance = data.getExtras().getParcelable("btInstanceBack");
+            }
+        }
     }
 }

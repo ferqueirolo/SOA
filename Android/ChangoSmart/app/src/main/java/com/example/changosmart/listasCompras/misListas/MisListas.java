@@ -1,4 +1,4 @@
-package com.example.changosmart.listasCompras;
+package com.example.changosmart.listasCompras.misListas;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
+import com.example.changosmart.compras.porLista.ComprarPorLista;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
@@ -60,10 +61,16 @@ public class MisListas extends AppCompatActivity {
                         .setItems(R.array.tresOpcionesAlertDialog, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Opcion 1 -> Iniciar Compra
-                                // Opcion 2 -> Editar Lista
-                                // Opcion 3 -> Eliminar Lista
+                                // Opcion 1 (pos 0) -> Iniciar Compra
+                                // Opcion 2 (pos 1) -> Editar Lista
+                                // Opcion 3 (pos 2) -> Eliminar Lista
                                 switch (which){
+                                    case 0:
+                                        Intent intentIniciarCompra = new Intent(view.getContext(), ComprarPorLista.class);
+                                        intentIniciarCompra.putExtra("NOMBRE_LISTA",  misListasCompras.get(position).getNombre_lista());
+                                        startActivity(intentIniciarCompra);
+                                        finish();
+                                        break;
                                     case 1:
                                         Intent intentDetalleLista = new Intent(view.getContext(), DetalleLista.class);
                                         intentDetalleLista.putExtra("NOMBRE_LISTA", misListasCompras.get(position).getNombre_lista());

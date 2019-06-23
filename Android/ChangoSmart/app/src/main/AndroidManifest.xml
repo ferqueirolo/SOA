@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".compras.ComprarPorLista"
+            android:name=".compras.porLista.ComprarPorLista"
             android:label="@string/title_activity_comprar_por_lista"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
@@ -28,11 +28,11 @@
             android:label="QR"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".productos.AnadirProductoExpress"
+            android:name=".compras.express.AnadirProductoExpress"
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".listasCompras.CrearLista"
+            android:name=".listasCompras.misListas.CrearLista"
             android:label="@string/title_activity_crear_lista"
             android:theme="@style/AppTheme.NoActionBar" />
 		<activity
@@ -44,7 +44,7 @@
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".listasCompras.MisListas"
+            android:name=".listasCompras.misListas.MisListas"
             android:label="@string/title_activity_mis_listas"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

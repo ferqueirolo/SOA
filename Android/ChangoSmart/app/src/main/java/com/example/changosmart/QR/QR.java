@@ -13,7 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.changosmart.R;
-import com.example.changosmart.productos.AnadirProductoExpress;
+import com.example.changosmart.compras.express.AnadirProductoExpress;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -22,6 +22,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 public class QR extends AppCompatActivity {
+
 
     private CameraSource cameraSource;
     private SurfaceView cameraView;
@@ -110,10 +111,12 @@ public class QR extends AppCompatActivity {
                     if (!token.equals(tokenanterior)) {
 
                         // guardamos el ultimo token proceado
+
                         tokenanterior = token;
-                        Intent i = new Intent(QR.this, AnadirProductoExpress.class);
-                        i.putExtra("nombreProducto",tokenanterior);
-                        startActivity(i);
+                        Log.e("MENSAJE A ENVIAR", tokenanterior);
+                        Intent intentQR = new Intent(QR.this, AnadirProductoExpress.class);
+                        intentQR.putExtra("nombreProducto",tokenanterior);
+                        setResult(RESULT_OK, intentQR);
                         finish();
                     }
                 }

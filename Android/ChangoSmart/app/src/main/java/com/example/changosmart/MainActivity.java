@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.example.changosmart.bluetooth.BluetoothSettings;
 import com.example.changosmart.chango.Chango;
-import com.example.changosmart.listasCompras.MisListas;
-import com.example.changosmart.productos.AnadirProductoExpress;
+import com.example.changosmart.listasCompras.misListas.MisListas;
+import com.example.changosmart.compras.express.AnadirProductoExpress;
 
 import java.util.ArrayList;
 import java.util.List;

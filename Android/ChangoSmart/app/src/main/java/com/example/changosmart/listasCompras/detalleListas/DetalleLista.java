@@ -39,6 +39,9 @@ public class DetalleLista extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_lista);
         Button buttonAgregarProductos = (Button) findViewById(R.id.buttonAgregarProductos);
 
+        //DEFINICION DEL BUSCADOR
+        EditText filter1 = (EditText) findViewById(R.id.searchFilter);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,7 +86,7 @@ public class DetalleLista extends AppCompatActivity {
                             Toast.makeText(DetalleLista.this, "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
                         } else {
                             MainActivity.myAppDatabase.myDao().actualizarCantidadAComprar(nombreListaRecibido, detalleLista.get(position).getNombreProducto(), Integer.valueOf(etCantidad.getText().toString()));
-                            miAdaptadorDetalleLista.actualizarCantidadAComprar(position, Integer.valueOf(etCantidad.getText().toString()));
+                            detalleLista.get(position).setCantidadAComprar(Integer.valueOf(etCantidad.getText().toString()));
                             miAdaptadorDetalleLista.notifyDataSetChanged();
                             dialog.dismiss();
                         }
@@ -105,20 +108,18 @@ public class DetalleLista extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         MainActivity.myAppDatabase.myDao().eliminarProductoEnLista(nombreListaRecibido, detalleLista.get(position).getNombreProducto());
-                        miAdaptadorDetalleLista.removeItem(position);
+                        detalleLista.remove(position);
                         miAdaptadorDetalleLista.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
-
                 dialog.show();
             }
         });
 
-        //DEFINICION DEL BUSCADOR
-        EditText Filter1 = (EditText) findViewById(R.id.searchFilter);
 
-        Filter1.addTextChangedListener(new TextWatcher() {
+
+        filter1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -139,8 +140,9 @@ public class DetalleLista extends AppCompatActivity {
                         }
                     }
                 }
-                miAdaptadorDetalleLista = new MiAdaptadorDetalleLista(DetalleLista.this, detalleListaFilt);
-                listaProductosView.setAdapter(miAdaptadorDetalleLista);
+                detalleLista = detalleListaFilt;
+                miAdaptadorDetalleLista.setListaDetalle(detalleLista);
+                miAdaptadorDetalleLista.notifyDataSetChanged();
             }
 
             @Override

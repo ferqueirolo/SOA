@@ -60,7 +60,7 @@ public class MiAdaptadorProductos extends BaseAdapter {
         // Populo los datos de los campos del xml
         tv_nombreProducto.setText(listaProductos.get(i).getNombre());
         tv_categoriaProducto.setText(listaProductos.get(i).getCategoria());
-        tv_precioProducto.setText(String.valueOf(listaProductos.get(i).getPrecio()));
+        tv_precioProducto.setText("$ " + String.valueOf(listaProductos.get(i).getPrecio()));
 
         // Retorno la vista generada
         return myView;

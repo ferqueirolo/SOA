@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".listasCompras.CrearLista"
+    tools:context=".listasCompras.misListas.CrearLista"
     tools:showIn="@layout/activity_crear_lista">
 
     <EditText

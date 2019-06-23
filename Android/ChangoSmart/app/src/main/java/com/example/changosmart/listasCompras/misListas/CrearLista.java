@@ -1,4 +1,4 @@
-package com.example.changosmart.listasCompras;
+package com.example.changosmart.listasCompras.misListas;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;

@@ -70,9 +70,7 @@ public class Chango extends AppCompatActivity {
 
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
-        Button buttonLeft = findViewById(R.id.buttonLeft);
-        Button buttonDown = findViewById(R.id.buttonDown);
-        Button buttonRight = findViewById(R.id.buttonRight);
+        buttonRight = findViewById(R.id.buttonRight);
         //Instancio el bt actual en el activity
         bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
 
@@ -116,7 +114,6 @@ public class Chango extends AppCompatActivity {
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
                 establecerComandoMovimiento = 'I';
-
                 enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
@@ -148,10 +145,10 @@ public class Chango extends AppCompatActivity {
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
                 establecerComandoMovimiento = 'D';
-
                 enviarInformacionMovimiento(establecerComandoMovimiento);
             }
         });
+
     }
 
     BroadcastReceiver myReceiver = new BroadcastReceiver() {

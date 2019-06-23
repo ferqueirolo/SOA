@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".compras.ComprarPorLista">
+    tools:context=".compras.porLista.ComprarPorLista">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,16 +21,6 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_comprar_por_lista" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/qr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        app:backgroundTint="@color/buttonColor"
-        app:srcCompat="@drawable/qrcode" />
 
 
 </android.support.design.widget.CoordinatorLayout>

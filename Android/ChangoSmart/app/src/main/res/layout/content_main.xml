@@ -41,7 +41,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/button_bg"
         android:onClick="openListExpress"
-        android:text="@string/title_activity_compra_express"
+        android:text="@string/string_boton_compra_express"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"

@@ -60,6 +60,7 @@
         android:layout_marginBottom="36dp"
         android:gravity="center"
         android:text="Precio"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textViewDetalleCategoria"
         app:layout_constraintStart_toStartOf="@+id/textViewDetalleProducto" />
 

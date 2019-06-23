@@ -1,4 +1,4 @@
-package com.example.changosmart.listasCompras;
+package com.example.changosmart.listasCompras.misListas;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

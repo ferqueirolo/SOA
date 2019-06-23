@@ -38,12 +38,6 @@ public class TodosProductos extends AppCompatActivity {
     private ArrayList<Producto> listaProductos;
     private ArrayList<Producto> listaProductosFilt;
     private MiAdaptadorProductos miAdaptadorProductos;
-    private HashMap<String, Integer> hashMapCantidades;
-
-    private SensorManager mSensorManager;
-    private ArrayAdapter adapter;
-    private Sensor mAccelerometer;
-    private MiAdaptadorListaProductosExpress adaptator;
 
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
@@ -60,7 +54,6 @@ public class TodosProductos extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         prevX = 0;
         listaProductos = (ArrayList<Producto>) MainActivity.myAppDatabase.myDao().getProductos();
         //DEFINICION DEL BUSCADOR
@@ -75,9 +68,9 @@ public class TodosProductos extends AppCompatActivity {
             mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-
-        if(listaProductos == null)
+        if(listaProductos == null) {
             listaProductos = new ArrayList<>();
+        }
 
         final ListView listaProductosView = (ListView) findViewById(R.id.listViewTodosProductos);
 
@@ -160,7 +153,6 @@ public class TodosProductos extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 
     SensorEventListener accelerometerSensorEventListener = new SensorEventListener() {
@@ -201,5 +193,4 @@ public class TodosProductos extends AppCompatActivity {
         setResult(RESULT_OK, null);
         finish();
     }
-
 }

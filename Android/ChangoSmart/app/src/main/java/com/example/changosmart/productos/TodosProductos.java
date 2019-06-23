@@ -28,6 +28,7 @@ import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import BD.DetalleListaCompraTabla;
 
@@ -47,21 +48,21 @@ public class TodosProductos extends AppCompatActivity {
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
-    private float prevX = 0;
+    private float prevX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundleRecibido = this.getIntent().getExtras();
         // SE DEBE RECIBIR EN EL INTENT EL NOMBRE DE LA LISTA
-        final String nombreListaRecibido = (String) bundleRecibido.get("NOMBRE_LISTA");
+        final String nombreListaRecibido = (String) Objects.requireNonNull(bundleRecibido).get("NOMBRE_LISTA");
         setContentView(R.layout.activity_todos_productos);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-
-        listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+        prevX = 0;
+        listaProductos = (ArrayList<Producto>) MainActivity.myAppDatabase.myDao().getProductos();
         //DEFINICION DEL BUSCADOR
         EditText Filter2 = (EditText) findViewById(R.id.searchFilter2);
 
@@ -69,15 +70,14 @@ public class TodosProductos extends AppCompatActivity {
         Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 
-        if (myAccelerometerSensor == null) {
-            //Si no se detecta sensor acelerómetro;
-        } else {
+        //Si el sensor es distinto de null se registra.
+        if (myAccelerometerSensor != null) {
             mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
 
         if(listaProductos == null)
-            listaProductos = new ArrayList<Producto>();
+            listaProductos = new ArrayList<>();
 
         final ListView listaProductosView = (ListView) findViewById(R.id.listViewTodosProductos);
 
@@ -103,6 +103,7 @@ public class TodosProductos extends AppCompatActivity {
                             Toast.makeText(TodosProductos.this, "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
                         }else{
                             if( MainActivity.myAppDatabase.myDao().existeProductoEnLista(nombreListaRecibido,listaProductos.get(position).getNombre()) != 1) {
+                                assert nombreListaRecibido != null;
                                 MainActivity.myAppDatabase.myDao().insertarLineaCompra(
                                         new DetalleListaCompraTabla(
                                                 nombreListaRecibido,
@@ -138,11 +139,11 @@ public class TodosProductos extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                listaProductos = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+                listaProductos = (ArrayList<Producto>) MainActivity.myAppDatabase.myDao().getProductos();
                 listaProductosFilt=new ArrayList<Producto>();
                 if(charSequence.toString().equals("")) {
                     // reset listview
-                    listaProductosFilt = (ArrayList) MainActivity.myAppDatabase.myDao().getProductos();
+                    listaProductosFilt = (ArrayList<Producto>) MainActivity.myAppDatabase.myDao().getProductos();
                 }
                 else {
                     for (Producto item : listaProductos) {

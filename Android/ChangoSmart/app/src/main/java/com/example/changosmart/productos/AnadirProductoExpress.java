@@ -29,9 +29,12 @@ import com.example.changosmart.R;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 import BT.Bluetooth;
 import BT.BluetoothConnectionService;
+
+import static java.lang.StrictMath.abs;
 
 public class AnadirProductoExpress extends AppCompatActivity {
     private SensorManager mSensorManager;
@@ -50,6 +53,8 @@ public class AnadirProductoExpress extends AppCompatActivity {
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
 
+    private float prevX;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +65,10 @@ public class AnadirProductoExpress extends AppCompatActivity {
         SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        prevX = 0;
+
         //Se instancia el bluetooth en base a la conexión actual
-        bluetoothInstance = getIntent().getExtras().getParcelable("btInstance");
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
 
         //Se verifica que se tenga una conexión activa de bluetooth.
         if (bluetoothInstance != null){
@@ -82,10 +89,9 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }
         }
 
-        if (myAccelerometerSensor == null) {
-            //Si no se detecta sensor acelerómetro;
-        } else {
-            mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        //Solo si se detecta sensor.
+        if (myAccelerometerSensor != null) {
+           mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
@@ -100,10 +106,8 @@ public class AnadirProductoExpress extends AppCompatActivity {
             prod = MainActivity.myAppDatabase.myDao().findByProductoExpress( valor );
             //Verifico que el producto no esté en la lista
             int flag = 0;
-            Iterator<Producto> iteratorProducto = listaProductos.iterator();
-            while(iteratorProducto.hasNext()) {
-                Producto productoActual = iteratorProducto.next();
-                if ( prod.getNombre().equals(productoActual.getNombre())){
+            for (Producto productoActual : listaProductos) {
+                if (prod.getNombre().equals(productoActual.getNombre())) {
                     flag = 1;
                 }
             }
@@ -252,7 +256,8 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 float delta = mAccelCurrent - mAccelLast;
                 mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
-                if (mAccel > 9) {
+                if (mAccel > 15 && abs(abs(x)-abs(prevX))>=20 ) {
+                    prevX=x;
                     Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
                     startActivityForResult(openQr, 1);
                     finish();

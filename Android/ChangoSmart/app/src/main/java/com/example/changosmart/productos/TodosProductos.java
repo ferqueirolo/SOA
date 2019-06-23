@@ -60,7 +60,6 @@ public class TodosProductos extends AppCompatActivity {
         //DEFINICION DEL BUSCADOR
         EditText filter2 = (EditText) findViewById(R.id.searchFilter2);
 
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 

@@ -30,6 +30,10 @@ import BT.BluetoothConnectionService;
 public class Chango extends AppCompatActivity {
     private Button buttonUp;
 
+    private Button buttonDown;
+
+    private Button buttonLeft;
+
     private char establecerComandoMovimiento;
 
     private char establecerComandoMovimientoServo;
@@ -56,21 +60,17 @@ public class Chango extends AppCompatActivity {
         Sensor myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         Sensor myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
-        if (myProximitySensor == null) {
-            //Si no se detecta sensor de proximidad;
-        } else {
+        if (myProximitySensor != null) {
             mySensorManager.registerListener(proximitySensorEventListener,myProximitySensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-        if (myLightSensor == null) {
-            //Si no se detecta sensor de proximidad;
-        } else {
+        if (myLightSensor != null) {
             mySensorManager.registerListener(lightSensorEventListener,myLightSensor,SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
-        buttonRight = findViewById(R.id.buttonRight);
+        Button buttonRight = findViewById(R.id.buttonRight);
         //Instancio el bt actual en el activity
         bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
 

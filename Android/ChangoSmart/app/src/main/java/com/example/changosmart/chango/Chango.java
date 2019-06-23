@@ -1,9 +1,11 @@
 package com.example.changosmart.chango;
 
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,12 +42,30 @@ public class Chango extends AppCompatActivity {
 
     private byte[] commandInBytes;
 
+    private float prevLuz=15;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mover_chango);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        Sensor myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+        if (myProximitySensor == null) {
+            //Si no se detecta sensor de proximidad;
+        } else {
+            mySensorManager.registerListener(proximitySensorEventListener,myProximitySensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        if (myLightSensor == null) {
+            //Si no se detecta sensor de proximidad;
+        } else {
+            mySensorManager.registerListener(lightSensorEventListener,myLightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
@@ -181,16 +201,20 @@ public class Chango extends AppCompatActivity {
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
             if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-                if (event.values[0] < 10) {
-                    //El sensor no detecta luz
+                if (event.values[0] < 10 && prevLuz > 10) {
+                    //El sensor no detecta luz y estaba apagada la luz del carrito
+                    prevLuz=event.values[0];
                     //Encender luz carrito
                     commandInBytes = String.valueOf('L').getBytes(Charset.defaultCharset());
                     bluetoothConnection.write(commandInBytes);
                 } else {
-                    //El sensor detecta luz
-                    //Apagar luz carrito
-                    commandInBytes = String.valueOf('L').getBytes(Charset.defaultCharset());
-                    bluetoothConnection.write(commandInBytes);
+                    if (event.values[0] >= 10 && prevLuz < 10) {
+                        //El sensor detecta luz y estaba encedida la luz del carrito
+                        prevLuz=event.values[0];
+                        //Apagar luz carrito
+                        commandInBytes = String.valueOf('L').getBytes(Charset.defaultCharset());
+                        bluetoothConnection.write(commandInBytes);
+                    }
                 }
             }
         }

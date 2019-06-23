@@ -31,6 +31,8 @@ import java.util.HashMap;
 
 import BD.DetalleListaCompraTabla;
 
+import static java.lang.StrictMath.abs;
+
 public class TodosProductos extends AppCompatActivity {
     private ArrayList<Producto> listaProductos;
     private ArrayList<Producto> listaProductosFilt;
@@ -45,6 +47,7 @@ public class TodosProductos extends AppCompatActivity {
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
     private float mAccelLast; // last acceleration including gravity
+    private float prevX = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +180,8 @@ public class TodosProductos extends AppCompatActivity {
                 float delta = mAccelCurrent - mAccelLast;
                 mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
-                if (mAccel > 9) {
+                if (mAccel > 15 && abs(abs(x)-abs(prevX))>=20 ) {
+                    prevX=x;
                     Intent openQr = new Intent(TodosProductos.this, QR.class);
                     startActivityForResult(openQr, 1);
                     finish();

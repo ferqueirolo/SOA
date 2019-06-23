@@ -30,6 +30,8 @@ import BT.BluetoothConnectionService;
 public class Chango extends AppCompatActivity {
     private Button buttonUp;
 
+    private Button buttonRight;
+
     private Button buttonDown;
 
     private Button buttonLeft;
@@ -70,7 +72,10 @@ public class Chango extends AppCompatActivity {
 
         //Inicializo los botones con los correspondientes controles
         buttonUp = findViewById(R.id.buttonUp);
-        Button buttonRight = findViewById(R.id.buttonRight);
+        buttonRight = findViewById(R.id.buttonRight);
+        buttonDown = findViewById(R.id.buttonDown);
+        buttonLeft = findViewById(R.id.buttonLeft);
+
         //Instancio el bt actual en el activity
         bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
 

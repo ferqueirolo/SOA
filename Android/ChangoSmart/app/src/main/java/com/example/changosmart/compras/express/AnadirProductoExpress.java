@@ -48,7 +48,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private MiAdaptadorListaProductosExpress adaptator;
-    private static ArrayList<Producto> listaProductos = new ArrayList<Producto>();
+    private static ArrayList<Producto> listaProductos;
     private TextView precioParcial;
 
     private Bluetooth bluetoothInstance;
@@ -103,35 +103,8 @@ public class AnadirProductoExpress extends AppCompatActivity {
         }
         
 		final ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
-        Producto prod = null;
-        String valor;
+        listaProductos = new ArrayList<Producto>();
         precioParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
-
-        //Si lo obtenido es diferente de null lo voy a buscar a la base de productos para obtener el producto
-        if( getIntent().getExtras() !=  null){
-            valor = getIntent().getExtras().getString("nombreProducto");
-            //Toast.makeText(this,"CODIGO LEIDO : " + valor, Toast.LENGTH_SHORT);
-            prod = MainActivity.myAppDatabase.myDao().findByProductoExpress( valor );
-            //Verifico que el producto no esté en la lista
-            int flag = 0;
-            Iterator<Producto> iteratorProducto = listaProductos.iterator();
-            while(iteratorProducto.hasNext()) {
-                Producto productoActual = iteratorProducto.next();
-                if ( prod.getNombre().equals(productoActual.getNombre())){
-                    flag = 1;
-                }
-            }
-
-            if ( flag == 1 ) {
-                //Muestro mensaje de que el producto ya existe
-                Toast.makeText(this,"Ese producto ya está agregado a la lista.",Toast.LENGTH_SHORT).show();
-            } else {
-                //Agrego el producto a la lista
-                listaProductos.add( prod );
-            }
-        }
-
-
         //Le seteo el total al label de la vista.
         precioParcial.setText(String.valueOf(0));
 
@@ -256,6 +229,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent openChango = new Intent(AnadirProductoExpress.this, Chango.class);
+                openChango.putExtra("btInstance", bluetoothInstance);
                 // se abre la vista de la camara para escanear el código qr y agregar el producto.
                 startActivity(openChango);
             }

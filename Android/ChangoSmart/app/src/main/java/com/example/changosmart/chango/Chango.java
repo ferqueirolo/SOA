@@ -121,8 +121,8 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                establecerComandoMovimiento = 'I';
-                enviarInformacionMovimiento(establecerComandoMovimiento);
+                establecerComandoMovimientoServo = 'I';
+                enviarInformacionMovimiento(establecerComandoMovimientoServo);
             }
         });
 
@@ -152,8 +152,8 @@ public class Chango extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Asigno la variable que va a recibir el embebido según el movimiento que quiero hacer.
-                establecerComandoMovimiento = 'D';
-                enviarInformacionMovimiento(establecerComandoMovimiento);
+                establecerComandoMovimientoServo = 'D';
+                enviarInformacionMovimiento(establecerComandoMovimientoServo);
             }
         });
 

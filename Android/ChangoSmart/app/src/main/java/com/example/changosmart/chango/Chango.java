@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +38,8 @@ public class Chango extends AppCompatActivity {
     private Button buttonLeft;
 
     private char establecerComandoMovimiento;
+
+    private char establecerComandoLuz;
 
     private char establecerComandoMovimientoServo;
 
@@ -162,31 +165,30 @@ public class Chango extends AppCompatActivity {
             //Acá se recibe el mensaje del arduino y se evalua si es In o Out
             String text = intent.getStringExtra("theMessage");
 
+            Log.d("temperatura",text);
+
             //Si recibe avanzar habilite el avance.
-            if (text.equals("AVANZAR")){
-                buttonUp.setEnabled(true);
+            if (text.equals("G")){
+                buttonUp.setVisibility(View.VISIBLE);
                 buttonUp.setBackgroundColor(getResources().getColor(R.color.mainTitlesColor));
 
                 Toast toast1 =
-                        Toast.makeText(getApplicationContext(), "Ruta encontrada! Comando habilitados", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "ME PUEDO MOVER", Toast.LENGTH_SHORT);
 
                 toast1.setGravity(Gravity.CENTER,0,0);
 
                 toast1.show();
 
-                toast1.show();
                 //Si recibe no avanzar, deshabilite el avance y envie un freno al embebido.
-            }else if (text.equals("NO AVANZAR")){
-                buttonUp.setEnabled(false);
+            }else if (text.equals("N")){
+                buttonUp.setVisibility(View.INVISIBLE);
                 buttonUp.setBackgroundColor(Color.LTGRAY);
-                //Envía un mensaje al arduino para que frene.
+                //Seteo variables (la accion la hace el arduino).
                 establecerComandoMovimiento = 'S';
-                enviarInformacionMovimiento(establecerComandoMovimiento);
                 establecerComandoMovimientoServo = 'F';
-                enviarInformacionMovimiento(establecerComandoMovimientoServo);
 
                 Toast toast1 =
-                        Toast.makeText(getApplicationContext(), "Sensor proximidad activado, encontrando ruta alternativa...", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "ULTRASONIDO ACTIVADO", Toast.LENGTH_SHORT);
 
                 toast1.setGravity(Gravity.CENTER,0,0);
 
@@ -275,15 +277,15 @@ public class Chango extends AppCompatActivity {
                     //El sensor no detecta luz y estaba apagada la luz del carrito
                     prevLuz=event.values[0];
                     //Encender luz carrito
-                    establecerComandoMovimiento = 'L';
-                    enviarInformacionMovimiento(establecerComandoMovimiento);
+                    establecerComandoLuz = 'L';
+                    enviarInformacionMovimiento(establecerComandoLuz);
                 } else {
                     if (event.values[0] >= 10 && prevLuz < 10) {
                         //El sensor detecta luz y estaba encedida la luz del carrito
                         prevLuz=event.values[0];
                         //Apagar luz carrito
-                        establecerComandoMovimiento = 'L';
-                        enviarInformacionMovimiento(establecerComandoMovimiento);
+                        establecerComandoLuz = 'L';
+                        enviarInformacionMovimiento(establecerComandoLuz);
                     }
                 }
             }

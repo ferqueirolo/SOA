@@ -50,6 +50,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
     private MiAdaptadorListaProductosExpress adaptator;
     private static ArrayList<Producto> listaProductos;
     private TextView precioParcial;
+    private int cantIngresar;
 
     private Bluetooth bluetoothInstance;
 
@@ -242,14 +243,14 @@ public class AnadirProductoExpress extends AppCompatActivity {
             //Acá se recibe el mensaje del arduino y se evalua si es In o Out
             String text = intent.getStringExtra("theMessage");
 
-            if (text.equals("IN")){
+            if (text.equals("E")){
                 Toast toast1 =
                         Toast.makeText(getApplicationContext(), "Ingresó un producto al chango." , Toast.LENGTH_SHORT);
 
                 toast1.setGravity(Gravity.CENTER,0,0);
-
+                cantIngresar--;
                 toast1.show();
-            }else if (text.equals("OUT")){
+            }else if (text.equals("O")){
                 Toast toast1 =
                         Toast.makeText(getApplicationContext(), "Salió un producto del chango." , Toast.LENGTH_SHORT);
 
@@ -342,6 +343,14 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                     dialogIngresarProd.setCancelable(false);
                                     dialogIngresarProd.setCanceledOnTouchOutside(false);
                                     dialogIngresarProd.show();
+                                    cantIngresar = cantidadNueva;
+                                    Thread hilo = new Thread(){
+                                        public void run(){
+                                            while(cantIngresar > 0){}
+                                            dialog.dismiss();
+                                        }
+                                    };
+                                    hilo.start();
                                 }
                             }
                         });

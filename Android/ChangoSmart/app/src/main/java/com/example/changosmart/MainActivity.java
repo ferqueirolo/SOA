@@ -19,6 +19,7 @@ import com.example.changosmart.compras.express.AnadirProductoExpress;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import BD.MyAppDatabase;
 import BD.ProductoTabla;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 17) {
             if(resultCode == RESULT_OK) {
-                bluetoothInstance = data.getExtras().getParcelable("btInstanceBack");
+                bluetoothInstance = Objects.requireNonNull(data.getExtras()).getParcelable("btInstanceBack");
                 Toast toast =
                         Toast.makeText(getApplicationContext(),
                                 "El dispositivo conectado es: " + bluetoothInstance.getPairDevice().getName(), Toast.LENGTH_SHORT);

@@ -23,10 +23,15 @@ import com.example.changosmart.compras.porLista.ComprarPorLista;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
+
+import BT.Bluetooth;
 
 public class MisListas extends AppCompatActivity {
     private ArrayList<ListaCompra> misListasCompras;
+
+    private Bluetooth bluetoothInstance;
 
     private MiAdaptadorListaCompras adaptador;
     private SensorEventListener proximitySensorEventListener;
@@ -38,10 +43,10 @@ public class MisListas extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
         // Inicio las listas para caso de prueba
         // Devuelve interface LIST, por eso lo casteo a ArrayList
-        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+        misListasCompras = (ArrayList<ListaCompra>) MainActivity.myAppDatabase.myDao().getListaCompras();
 
         final ListView listaComprasView = (ListView) findViewById(R.id.listViewMisListas);
 
@@ -68,12 +73,14 @@ public class MisListas extends AppCompatActivity {
                                     case 0:
                                         Intent intentIniciarCompra = new Intent(view.getContext(), ComprarPorLista.class);
                                         intentIniciarCompra.putExtra("NOMBRE_LISTA",  misListasCompras.get(position).getNombre_lista());
+                                        intentIniciarCompra.putExtra("btInstance", bluetoothInstance);
                                         startActivity(intentIniciarCompra);
                                         finish();
                                         break;
                                     case 1:
                                         Intent intentDetalleLista = new Intent(view.getContext(), DetalleLista.class);
                                         intentDetalleLista.putExtra("NOMBRE_LISTA", misListasCompras.get(position).getNombre_lista());
+                                        intentDetalleLista.putExtra("btInstance", bluetoothInstance);
                                         startActivity(intentDetalleLista);
                                         break;
                                     case 2: // Eliminar Lista
@@ -94,6 +101,7 @@ public class MisListas extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Intent newActivity = new Intent(view.getContext(),CrearLista.class);
+                        newActivity.putExtra("btInstance", bluetoothInstance);
                         startActivityForResult(newActivity, 1);
                     }
                 }
@@ -106,7 +114,7 @@ public class MisListas extends AppCompatActivity {
         super.onStart();
 
         // Devuelve interface LIST, por eso lo casteo a ArrayList
-        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+        misListasCompras = (ArrayList<ListaCompra>) MainActivity.myAppDatabase.myDao().getListaCompras();
     }
 
     @Override
@@ -114,6 +122,7 @@ public class MisListas extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
             Intent refreshActivity = new Intent(this, MisListas.class);
+            refreshActivity.putExtra("btInstance", bluetoothInstance);
             startActivity(refreshActivity);
             this.finish();
         }

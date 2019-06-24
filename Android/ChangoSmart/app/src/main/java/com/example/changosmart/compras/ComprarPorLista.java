@@ -1,11 +1,8 @@
 package com.example.changosmart.compras;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.ListView;
 
 import com.example.changosmart.MainActivity;
@@ -16,9 +13,9 @@ import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLis
 import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
-import BD.MyAppDatabase;
+import BT.Bluetooth;
 
 public class ComprarPorLista extends AppCompatActivity {
     private String nombreListaRecibido;
@@ -27,22 +24,27 @@ public class ComprarPorLista extends AppCompatActivity {
     private ListView listViewProductosAComprar,
                      listViewProductosComprados;
 
+    private Bluetooth bluetoothInstance;
+
     private MiAdaptadorDetalleLista miAdaptadorDetalleLista;
     private MiAdaptadorListaProductosExpress miAdaptadorListaProductosExpress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
+        
         Bundle bundleRecibido = this.getIntent().getExtras();
         // SE DEBE RECIBIR EN EL INTENT EL NOMBRE DE LA LISTA
-        nombreListaRecibido = (String) bundleRecibido.get("NOMBRE_LISTA");
+        nombreListaRecibido = (String) Objects.requireNonNull(bundleRecibido).get("NOMBRE_LISTA");
 
         // Seteo los LISTVIEW
         listViewProductosAComprar   = (ListView) findViewById(R.id.listViewAComprarCompraLista);
         listViewProductosComprados  = (ListView) findViewById(R.id.listViewCompradosCompraLista);
 
         // Completo con los productos de la lista ya creada
-        listaProductosAcomprar = (ArrayList) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
+        listaProductosAcomprar = (ArrayList<LineaCompra>) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
 
         // Inicializo la lista vacia
         listaProductosComprados = new ArrayList<Producto>();

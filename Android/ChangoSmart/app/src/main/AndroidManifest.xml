@@ -65,6 +65,7 @@
             android:name=".bluetooth.BluetoothSettings"
             android:label="Administrar Bluetooth"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".compras.ComprarPorLista" />
     </application>
 
 </manifest>

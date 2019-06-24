@@ -2,7 +2,6 @@ package com.example.changosmart.listasCompras.detalleListas;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,12 +20,17 @@ import com.example.changosmart.R;
 import com.example.changosmart.productos.TodosProductos;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import BT.Bluetooth;
 
 public class DetalleLista extends AppCompatActivity {
     private ArrayList<LineaCompra> detalleLista;
     private ArrayList<LineaCompra> detalleListaFilt;
     private String nombreListaRecibido;
     private ListView listaProductosView;
+
+    private Bluetooth bluetoothInstance;
 
     public static MiAdaptadorDetalleLista miAdaptadorDetalleLista;
 
@@ -45,6 +49,8 @@ public class DetalleLista extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
         // Cargo la lista de los productos
         //Se castea porque retorna una clase List
 
@@ -64,6 +70,7 @@ public class DetalleLista extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentProductos = new Intent(v.getContext(), TodosProductos.class);
                 intentProductos.putExtra("NOMBRE_LISTA", nombreListaRecibido);
+                intentProductos.putExtra("btInstance", bluetoothInstance);
                 startActivity(intentProductos);
             }
         });

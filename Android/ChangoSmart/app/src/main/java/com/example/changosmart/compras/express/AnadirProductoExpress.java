@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,7 +16,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.Gravity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +31,6 @@ import com.example.changosmart.R;
 import com.example.changosmart.chango.Chango;
 import com.example.changosmart.productos.Producto;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -45,6 +42,7 @@ import static java.lang.StrictMath.abs;
 
 public class AnadirProductoExpress extends AppCompatActivity {
     public static final int REQUEST_CODE_QR = 1010;
+
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private MiAdaptadorListaProductosExpress adaptator;
@@ -55,8 +53,6 @@ public class AnadirProductoExpress extends AppCompatActivity {
     private Bluetooth bluetoothInstance;
 
     private BluetoothConnectionService bluetoothConnection;
-
-    private byte[] commandInBytes;
 
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
@@ -211,6 +207,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
             public void onClick(View view) {
                 if (bluetoothInstance.getPairDevice() != null) {
                     Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                    openQr.putExtra("btInstance", bluetoothInstance);
                     // se abre la vista de la camara para escanear el código qr y agregar el producto.
                     startActivityForResult(openQr, REQUEST_CODE_QR);
                 } else {
@@ -283,7 +280,8 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 if (mAccel > 15 && abs(abs(x)-abs(prevX))>=20 ) {
                     prevX=x;
                     Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
-                    startActivityForResult(openQr, 1);
+                    openQr.putExtra("btInstance", bluetoothInstance);
+                    startActivity(openQr);
                     finish();
                 }
             }
@@ -367,10 +365,10 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     }else{
                         Toast.makeText(this, "Este producto no se encuentra registrado en el sistema.", Toast.LENGTH_SHORT).show();
                     }
-
                 break;
                 default:
                     Intent refreshActivity = new Intent(this, AnadirProductoExpress.class);
+                    refreshActivity.putExtra("btInstance", bluetoothInstance);
                     startActivity(refreshActivity);
                     this.finish();
             }

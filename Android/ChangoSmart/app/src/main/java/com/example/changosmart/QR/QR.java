@@ -20,6 +20,9 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.util.Objects;
+
+import BT.Bluetooth;
 
 public class QR extends AppCompatActivity {
 
@@ -29,6 +32,8 @@ public class QR extends AppCompatActivity {
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     private String token = "";
     private String tokenanterior = "";
+
+    private Bluetooth bluetoothInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,8 @@ public class QR extends AppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
 
+                bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
+
                 // verifico si el usuario dio los permisos para la camara
                 if (ActivityCompat.checkSelfPermission(QR.this, Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -66,12 +73,11 @@ public class QR extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         // verificamos la version de ANdroid que sea al menos la M para mostrar
                         // el dialog de la solicitud de la camara
-                        if (shouldShowRequestPermissionRationale(
-                                Manifest.permission.CAMERA)) ;
+                        shouldShowRequestPermissionRationale(
+                                Manifest.permission.CAMERA);
                         requestPermissions(new String[]{Manifest.permission.CAMERA},
                                 MY_PERMISSIONS_REQUEST_CAMERA);
                     }
-                    return;
                 } else {
                     try {
                         cameraSource.start(cameraView.getHolder());
@@ -116,6 +122,7 @@ public class QR extends AppCompatActivity {
                         Log.e("MENSAJE A ENVIAR", tokenanterior);
                         Intent intentQR = new Intent(QR.this, AnadirProductoExpress.class);
                         intentQR.putExtra("nombreProducto",tokenanterior);
+                        intentQR.putExtra("btInstance", bluetoothInstance);
                         setResult(RESULT_OK, intentQR);
                         finish();
                     }

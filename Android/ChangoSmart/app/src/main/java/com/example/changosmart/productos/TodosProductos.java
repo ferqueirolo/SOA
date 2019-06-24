@@ -12,11 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,10 +26,10 @@ import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 import BD.DetalleListaCompraTabla;
+import BT.Bluetooth;
 
 import static java.lang.StrictMath.abs;
 
@@ -39,6 +37,8 @@ public class TodosProductos extends AppCompatActivity {
     private ArrayList<Producto> listaProductos;
     private ArrayList<Producto> listaProductosFilt;
     private MiAdaptadorProductos miAdaptadorProductos;
+
+    private Bluetooth bluetoothInstance;
 
     private float mAccel; // acceleration apart from gravity
     private float mAccelCurrent; // current acceleration including gravity
@@ -55,6 +55,7 @@ public class TodosProductos extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
         prevX = 0;
         listaProductos = (ArrayList<Producto>) MainActivity.myAppDatabase.myDao().getProductos();
         //DEFINICION DEL BUSCADOR
@@ -188,6 +189,7 @@ public class TodosProductos extends AppCompatActivity {
                 if (mAccel > 15 && abs(abs(x)-abs(prevX))>=20 ) {
                     prevX=x;
                     Intent openQr = new Intent(TodosProductos.this, QR.class);
+                    openQr.putExtra("btInstance", bluetoothInstance);
                     startActivityForResult(openQr, 1);
                     finish();
                 }
@@ -199,6 +201,7 @@ public class TodosProductos extends AppCompatActivity {
     public void onBackPressed(){
         Intent intentDetalleListas = new Intent(this, DetalleLista.class);
         intentDetalleListas.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intentDetalleListas.putExtra("btInstance", bluetoothInstance);
         startActivity(intentDetalleListas);
 
         // Eliminamos la actividad actual para que no quede viva

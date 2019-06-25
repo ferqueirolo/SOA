@@ -25,9 +25,9 @@ import com.example.changosmart.MainActivity;
 import com.example.changosmart.QR.QR;
 import com.example.changosmart.R;
 import com.example.changosmart.chango.Chango;
+import com.example.changosmart.compras.express.MiAdaptadorListaProductosExpress;
 import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
 import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLista;
-import com.example.changosmart.compras.express.MiAdaptadorListaProductosExpress;
 import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
@@ -342,8 +342,8 @@ public class ComprarPorLista extends AppCompatActivity{
                         AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
                         builder.setTitle("Ingrese el producto al chango\n");
                         final AlertDialog dialogIngresarProd = builder.create();
-                        //dialogIngresarProd.setCancelable(false);
-                        //dialogIngresarProd.setCanceledOnTouchOutside(false);
+                        dialogIngresarProd.setCancelable(false);
+                        dialogIngresarProd.setCanceledOnTouchOutside(false);
                         dialogIngresarProd.show();
                         cantIngresar = cantidadNueva;
                         Thread hilo = new Thread(){

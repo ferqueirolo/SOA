@@ -40,10 +40,6 @@
             android:label="@string/title_activity_anadir_producto"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".listasCompras.detalleListas.DetalleLista"
-            android:label="@string/title_activity_anadir_producto"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".listasCompras.misListas.MisListas"
             android:label="@string/title_activity_mis_listas"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -65,7 +61,6 @@
             android:name=".bluetooth.BluetoothSettings"
             android:label="Administrar Bluetooth"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".compras.ComprarPorLista" />
     </application>
 
 </manifest>

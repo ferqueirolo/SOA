@@ -1,13 +1,9 @@
 package com.example.changosmart.listasCompras.misListas;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
@@ -24,7 +19,6 @@ import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 
 import BT.Bluetooth;
 
@@ -112,9 +106,18 @@ public class MisListas extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
         // Devuelve interface LIST, por eso lo casteo a ArrayList
-        misListasCompras = (ArrayList<ListaCompra>) MainActivity.myAppDatabase.myDao().getListaCompras();
+        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+        adaptador.setListaProductos(misListasCompras);
+        adaptador.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
+        adaptador.setListaProductos(misListasCompras);
+        adaptador.notifyDataSetChanged();
     }
 
     @Override
@@ -140,11 +143,9 @@ public class MisListas extends AppCompatActivity {
                 .setPositiveButton("SI", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.myAppDatabase.myDao().deleteLista(
-                                misListasCompras.get(pos).getNombre_lista()
-                        );
+                        MainActivity.myAppDatabase.myDao().eliminarLista(misListasCompras.get(pos).getNombre_lista());
+                        MainActivity.myAppDatabase.myDao().eliminarDetalleLista(misListasCompras.get(pos).getNombre_lista());
                         misListasCompras.remove(pos);
-                        adaptador.removeItem(pos);
                         adaptador.notifyDataSetChanged();
                     }
                 })

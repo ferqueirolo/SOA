@@ -34,6 +34,7 @@ import com.example.changosmart.productos.Producto;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Random;
 
 import BT.Bluetooth;
 import BT.BluetoothConnectionService;
@@ -42,12 +43,14 @@ import static java.lang.StrictMath.abs;
 
 public class AnadirProductoExpress extends AppCompatActivity {
     public static final int REQUEST_CODE_QR = 1010;
+    public static final int REQUEST_CODE_QR_QUITAR = 1111;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private MiAdaptadorListaProductosExpress adaptator;
     private static ArrayList<Producto> listaProductos;
     private TextView precioParcial;
+    private TextView temperaturaTextView;
     private int cantIngresar;
 
     private Bluetooth bluetoothInstance;
@@ -59,6 +62,9 @@ public class AnadirProductoExpress extends AppCompatActivity {
     private float mAccelLast; // last acceleration including gravity
 
     private float prevX;
+    private boolean reinicioLista = false;
+    private StringBuilder temperaturaStringBuilder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +77,15 @@ public class AnadirProductoExpress extends AppCompatActivity {
         Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         prevX = 0;
+        reinicioLista = false;
+        temperaturaStringBuilder = new StringBuilder();
+        temperaturaTextView = findViewById(R.id.textViewTemperatura);
+        temperaturaTextView.setText("");
 
         //Se instancia el bluetooth en base a la conexión actual
         bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
+
+
 
         //Se verifica que se tenga una conexión activa de bluetooth.
         if (bluetoothInstance != null){
@@ -117,7 +129,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     View miAlertDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.alertdialog_linea_compra, null);
                     final EditText etCantidad = (EditText) miAlertDialog.findViewById(R.id.editTextDetalleCantidadProducto);
                     builder.setView(miAlertDialog);
-                    final AlertDialog dialog = builder.create();
+                final AlertDialog dialog = builder.create();
 
                     Button buttonAceptarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogDetalleAceptar);
 
@@ -177,17 +189,32 @@ public class AnadirProductoExpress extends AppCompatActivity {
         limpiarLista.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(final View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
                         builder.setTitle("¿Desea vaciar la lista de productos?")
                                 .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        reinicioLista = true;
                                         TextView totalParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
                                         totalParcial.setText(String.valueOf(0));
                                         listaProductos.clear();
                                         adaptator.notifyDataSetChanged();
+                                        AlertDialog.Builder builderLiberar = new AlertDialog.Builder(view.getContext())
+                                                .setTitle("Vaciar el chango")
+                                                .setMessage("Quite los productos del chango y luego presione aceptar")
+                                                .setCancelable(false)
+                                                .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        reinicioLista = false;
+                                                    }
+                                                });
+                                        AlertDialog quitarProductosDialog = builderLiberar.create();
+                                        quitarProductosDialog.setCanceledOnTouchOutside(false);
+                                        quitarProductosDialog.show();
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -222,6 +249,48 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }
         });
 
+        Button finalizarCompraButton = (Button) findViewById(R.id.finalizarCompraButton);
+
+        finalizarCompraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                builder.setTitle("¿Seguro que desea finalizar la compra?")
+                        .setMessage("Al finalizar la compra se le dira a que caja debe dirigirse")
+                        .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Random random = new Random();
+                                AlertDialog.Builder builderFinalizarCompra = new AlertDialog.Builder(v.getContext());
+                                builderFinalizarCompra.setTitle("Compra Finalizada")
+                                        .setMessage("Monto total acumulado $ "+ precioParcial.getText() +"\nDirigase a la caja Nº "+ (random.nextInt(10)+1))
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                TextView totalParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
+                                                totalParcial.setText(String.valueOf(0));
+                                                listaProductos.clear();
+                                                adaptator.notifyDataSetChanged();
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
+                                alertDialogFinalizarCompra.setCancelable(false);
+                                alertDialogFinalizarCompra.setCanceledOnTouchOutside(false);
+                                alertDialogFinalizarCompra.show();
+                            }
+                        });
+                builder.show();
+            }
+        });
+
         FloatingActionButton changoFab = findViewById(R.id.moveChartCompraExpress);
         changoFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,10 +319,20 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }else if (text.equals("O")){
                 Toast toast1 =
                         Toast.makeText(getApplicationContext(), "Salió un producto del chango." , Toast.LENGTH_SHORT);
-
                 toast1.setGravity(Gravity.CENTER,0,0);
-
                 toast1.show();
+
+                Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                openQr.putExtra("btInstance", bluetoothInstance);
+                startActivityForResult(openQr, REQUEST_CODE_QR_QUITAR);
+
+
+            }else if (text.matches("[0-9]")){
+                temperaturaStringBuilder.append(text.indexOf(0));
+                if(temperaturaStringBuilder.length() >= 2 ){
+                    temperaturaTextView.setText(temperaturaStringBuilder.toString());
+                    temperaturaStringBuilder.setLength(0);
+                }
             }
         }
     };
@@ -281,8 +360,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     prevX=x;
                     Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
                     openQr.putExtra("btInstance", bluetoothInstance);
-                    startActivity(openQr);
-                    finish();
+                    startActivityForResult(openQr, REQUEST_CODE_QR);
                 }
             }
         }
@@ -335,9 +413,9 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                     dialog.dismiss();
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(AnadirProductoExpress.this);
-
-                                    builder.setTitle("Ingrese el producto al chango");
+                                    builder.setTitle("Ingrese el producto al chango\n");
                                     AlertDialog dialogIngresarProd = builder.create();
+                                    // DESCOMENTAR ACA
                                     dialogIngresarProd.setCancelable(false);
                                     dialogIngresarProd.setCanceledOnTouchOutside(false);
                                     dialogIngresarProd.show();
@@ -366,6 +444,25 @@ public class AnadirProductoExpress extends AppCompatActivity {
                         Toast.makeText(this, "Este producto no se encuentra registrado en el sistema.", Toast.LENGTH_SHORT).show();
                     }
                 break;
+                case REQUEST_CODE_QR_QUITAR:
+                    if ( ! reinicioLista ) {
+                        int pos = 0;
+                        String nombreProducto = data.getStringExtra("nombreProducto");
+                        for (Producto producto : listaProductos) {
+                            if (producto.getNombre().equals(nombreProducto)) {
+                                break;
+                            } else {
+                                pos++;
+                            }
+                        }
+                        if (listaProductos.get(pos).getNombre().equals(nombreProducto)) {
+                            Toast.makeText(AnadirProductoExpress.this, "Se quitara el producto " + nombreProducto, Toast.LENGTH_SHORT).show();
+                            precioParcial.setText(String.valueOf(Integer.valueOf(precioParcial.getText().toString()) - listaProductos.get(pos).getTotalPorProducto()));
+                            listaProductos.remove(pos);
+                            adaptator.notifyDataSetChanged();
+                        }
+                    }
+                break;
                 default:
                     Intent refreshActivity = new Intent(this, AnadirProductoExpress.class);
                     refreshActivity.putExtra("btInstance", bluetoothInstance);
@@ -384,9 +481,40 @@ public class AnadirProductoExpress extends AppCompatActivity {
 
     }
 
-    private boolean nuevoProductoAIngresar(Intent data){
-        boolean nuevoProductoIngresado = false;
-
-        return  nuevoProductoIngresado;
+    @Override
+    public void onBackPressed() {
+        if(! listaProductos.isEmpty()) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(AnadirProductoExpress.this);
+            builder.setTitle("¿Seguro que desea finalizar la compra?")
+                    .setMessage("Al finalizar la compra se le dira a que caja debe dirigirse")
+                    .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Random random = new Random();
+                            AlertDialog.Builder builderFinalizarCompra = new AlertDialog.Builder(AnadirProductoExpress.this);
+                            builderFinalizarCompra.setTitle("Compra Finalizada")
+                                    .setMessage("Monto total acumulado $ " + precioParcial.getText() + "\nDirigase a la caja Nº " + (random.nextInt(10) + 1))
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
+                            alertDialogFinalizarCompra.setCancelable(false);
+                            alertDialogFinalizarCompra.setCanceledOnTouchOutside(false);
+                            alertDialogFinalizarCompra.show();
+                        }
+                    });
+            builder.show();
+        }else {
+            super.onBackPressed();
+        }
     }
 }

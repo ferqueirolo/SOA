@@ -76,14 +76,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cargarProductos() {
+        List<ProductoTabla> listaProductoTabla = new ArrayList<ProductoTabla>();
+        listaProductoTabla.add(new ProductoTabla("Oreo", "Comida", 20));
+        listaProductoTabla.add(new ProductoTabla("Paty Swift", "Congelado", 30));
+        listaProductoTabla.add(new ProductoTabla("Axe", "Higiene", 15));
+        listaProductoTabla.add(new ProductoTabla("Cuchillo", "Hogar", 30));
+        listaProductoTabla.add(new ProductoTabla("Pochoclera", "Cocina", 25));
+        listaProductoTabla.add(new ProductoTabla("Birome Bic", "Libreria", 100));
+        listaProductoTabla.add(new ProductoTabla("Pila", "Electricidad", 20));
+        listaProductoTabla.add(new ProductoTabla("Lechuga", "Verduleria", 150));
         if (myAppDatabase.myDao().getProductos().isEmpty()) {
-            List<ProductoTabla> listaProductoTabla = new ArrayList<ProductoTabla>();
-            listaProductoTabla.add(new ProductoTabla("Oreo", "Comida", 20));
-            listaProductoTabla.add(new ProductoTabla("Paty Swirft", "Congelado", 30));
-            listaProductoTabla.add(new ProductoTabla("Axe", "Higiene", 15));
-            listaProductoTabla.add(new ProductoTabla("Cuchillo", "Hogar", 30));
-            listaProductoTabla.add(new ProductoTabla("Birome Bic", "Libreria", 10));
-
+            myAppDatabase.myDao().cargarProductos(listaProductoTabla);
+        }else{
+            myAppDatabase.myDao().eliminarTodosProductos();
             myAppDatabase.myDao().cargarProductos(listaProductoTabla);
         }
     }

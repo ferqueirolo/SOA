@@ -83,16 +83,15 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_marginBottom="624dp"
         android:background="@color/mainTitlesColor"
         android:gravity="center"
         android:text="NUEVA LISTA"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

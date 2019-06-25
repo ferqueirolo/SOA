@@ -1,14 +1,17 @@
 package com.example.changosmart.compras.porLista;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,11 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.changosmart.MainActivity;
-import com.example.changosmart.ProductoDialog;
 import com.example.changosmart.QR.QR;
 import com.example.changosmart.R;
 import com.example.changosmart.chango.Chango;
-import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 import com.example.changosmart.listasCompras.detalleListas.LineaCompra;
 import com.example.changosmart.listasCompras.detalleListas.MiAdaptadorDetalleLista;
 import com.example.changosmart.compras.express.MiAdaptadorListaProductosExpress;
@@ -31,10 +32,11 @@ import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Random;
 
 import BT.Bluetooth;
+import BT.BluetoothConnectionService;
 
 public class ComprarPorLista extends AppCompatActivity{
     public static final int REQUEST_CODE_QR = 1010;
@@ -45,10 +47,15 @@ public class ComprarPorLista extends AppCompatActivity{
                      listViewProductosComprados;
 
     private Bluetooth bluetoothInstance;
+    private BluetoothConnectionService bluetoothConnection;
 
     private MiAdaptadorDetalleLista miAdaptadorProdAComprar;
     private MiAdaptadorListaProductosExpress miAdaptadorProdComprados;
     private TextView montoParcial;
+    private int cantIngresar;
+
+    private StringBuilder temperaturaStringBuilder;
+    private TextView temperaturaTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,32 @@ public class ComprarPorLista extends AppCompatActivity{
         montoParcial = (TextView) findViewById(R.id.textViewCompraListaTotalParcial);
         montoParcial.setText("0");
 
+
+        temperaturaStringBuilder = new StringBuilder();
+        temperaturaTextView = findViewById(R.id.textViewTemperatura);
+        temperaturaTextView.setText("");
+
+        //Se instancia el bluetooth en base a la conexión actual
         bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
+
+        //Se verifica que se tenga una conexión activa de bluetooth.
+        if (bluetoothInstance != null){
+            //Se inicia el socket del bt para escuchar mensajes del arduino.
+            bluetoothConnection = new BluetoothConnectionService(getApplicationContext());
+            if (bluetoothInstance.getPairDevice() != null){
+                bluetoothConnection.startClient( bluetoothInstance.getPairDevice(), bluetoothConnection.getDeviceUUID());
+                //Registro el evento del broadcast para detectar el provider que genera la lectura de un dato enviado por el arduino (BluetoothServiceConnection)
+                LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, new IntentFilter("IncomingMessage"));
+            }else {
+                //Se informa al usuario que debe emparejarse con un dispositivo.
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor..." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
+            }
+        }
 
         // Seteo los LISTVIEW
         listViewProductosAComprar   = (ListView) findViewById(R.id.listViewAComprarCompraLista);
@@ -159,6 +191,46 @@ public class ComprarPorLista extends AppCompatActivity{
                 startActivity(openChango);
             }
         });
+
+        Button finalizarCompraButton = (Button) findViewById(R.id.finalizarCompraButton);
+
+        finalizarCompraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("¿Seguro que desea finalizar la compra?")
+                        .setMessage("Al finalizar la compra se le dira a que caja debe dirigirse")
+                        .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(ComprarPorLista.this, "Si presiona OK, se cerrara la compra y volvera al inicio.", Toast.LENGTH_LONG).show();
+                                Random random = new Random();
+                                AlertDialog.Builder builderFinalizarCompra = new AlertDialog.Builder(v.getContext());
+                                builderFinalizarCompra.setTitle("Compra Finalizada")
+                                        .setMessage("Monto total acumulado $ " + montoParcial.getText() + "\nDirigase a la caja Nº " + (random.nextInt(10) + 1))
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                MainActivity.myAppDatabase.myDao().eliminarLista(nombreListaRecibido);
+                                                dialog.dismiss();
+                                                finish();
+                                            }
+                                        });
+                                AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
+                                alertDialogFinalizarCompra.setCancelable(false);
+                                alertDialogFinalizarCompra.setCanceledOnTouchOutside(false);
+                                alertDialogFinalizarCompra.show();
+                            }
+                        });
+                builder.show();
+            }
+        });
     }
 
     @Override
@@ -169,19 +241,7 @@ public class ComprarPorLista extends AppCompatActivity{
                 // CREAR UN ASYNCTASK QUE SI RECIBE UN 1 DE LA BARRERA DEL ARDUINO HAGA UN DISMISS DEL DIALOG Y TE AGREGUE EL PRODUCTO
 
                 // Si pudo ingresar el nuevo producto tengo que esperar a las barreras
-                if (nuevoProductoAIngresar(data)) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
-
-                    builder.setTitle("Ingrese el producto al chango")
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
-                    builder.show();
-                }
+                nuevoProductoAIngresar(data);
             } else {
                 Intent refreshActivity = new Intent(this, ComprarPorLista.class);
                 refreshActivity.putExtra("btInstance", bluetoothInstance);
@@ -202,16 +262,18 @@ public class ComprarPorLista extends AppCompatActivity{
 
     private void eliminarEnListaAComprar(Producto producto) {
         Iterator<LineaCompra> iteratorProducto = listaProductosAcomprar.iterator();
-        LineaCompra productoActual = iteratorProducto.next();
-        int i = 0;
-        while (iteratorProducto.hasNext() && ! productoActual.getNombreProducto().equals(producto.getNombre())) {
-            productoActual = iteratorProducto.next();
-            i ++;
-        }
-        if(productoActual.getNombreProducto().equals(producto.getNombre()))
-            listaProductosAcomprar.remove(i);
+        if(iteratorProducto.hasNext()) {
+            LineaCompra productoActual = iteratorProducto.next();
+            int i = 0;
+            while (iteratorProducto.hasNext() && !productoActual.getNombreProducto().equals(producto.getNombre())) {
+                productoActual = iteratorProducto.next();
+                i++;
+            }
+            if (productoActual.getNombreProducto().equals(producto.getNombre()))
+                listaProductosAcomprar.remove(i);
 
-        miAdaptadorProdAComprar.notifyDataSetChanged();
+            miAdaptadorProdAComprar.notifyDataSetChanged();
+        }
     }
 
     private boolean nuevoProductoAIngresar(Intent data) {
@@ -277,6 +339,20 @@ public class ComprarPorLista extends AppCompatActivity{
                             miAdaptadorProdComprados.notifyDataSetChanged();
                         }
                         dialog.dismiss();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
+                        builder.setTitle("Ingrese el producto al chango\n");
+                        final AlertDialog dialogIngresarProd = builder.create();
+                        //dialogIngresarProd.setCancelable(false);
+                        //dialogIngresarProd.setCanceledOnTouchOutside(false);
+                        dialogIngresarProd.show();
+                        cantIngresar = cantidadNueva;
+                        Thread hilo = new Thread(){
+                            public void run(){
+                                while(cantIngresar > 0){}
+                                dialogIngresarProd.dismiss();
+                            }
+                        };
+                        hilo.start();
                     }
                 }
             });
@@ -292,7 +368,7 @@ public class ComprarPorLista extends AppCompatActivity{
 
 
             dialog.show();
-
+            nuevoProductoIngresado = true;
         }else{
             Toast.makeText(ComprarPorLista.this, "El producto scaneado no se encuentra cargado en el sistema.", Toast.LENGTH_LONG).show();
         }
@@ -301,66 +377,85 @@ public class ComprarPorLista extends AppCompatActivity{
 
     private int getCantidadComprar(String nombreProducto){
         Iterator<LineaCompra> iteratorProducto = listaProductosAcomprar.iterator();
-        LineaCompra productoActual = iteratorProducto.next();
-        while (iteratorProducto.hasNext() && ! productoActual.getNombreProducto().equals(nombreProducto)) {
-            productoActual = iteratorProducto.next();
+        if(iteratorProducto.hasNext()) {
+            LineaCompra productoActual = iteratorProducto.next();
+            while (iteratorProducto.hasNext() && !productoActual.getNombreProducto().equals(nombreProducto)) {
+                productoActual = iteratorProducto.next();
+            }
+            if (productoActual.getNombreProducto().equals(nombreProducto))
+                return productoActual.getCantidadAComprar();
         }
-        if(productoActual.getNombreProducto().equals(nombreProducto))
-            return productoActual.getCantidadAComprar();
-        else
-            return -1;
+
+        return -1;
     }
 
-    /*
-    private int openDialog(){
+    BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Acá se recibe el mensaje del arduino y se evalua si es In o Out
+            String text = intent.getStringExtra("theMessage");
 
-        ProductoDialog productoDialog = new ProductoDialog();
-        productoDialog.show(getSupportFragmentManager(), "cantidadProdDialog");
-        return cantidadComprar;
-    }*/
+            if (text.equals("E")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Ingresó un producto al chango." , Toast.LENGTH_SHORT);
 
-    /*
-    @Override
-    public void aplicarCantidad(int cantidad) {
-        cantidadComprar = cantidad;
-        Log.e("COMPRAR_POR_LISTA","CANTIDAD " + cantidadComprar);
-    }
+                toast1.setGravity(Gravity.CENTER,0,0);
+                cantIngresar--;
+                toast1.show();
+            }else if (text.equals("O")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Salió un producto del chango." , Toast.LENGTH_SHORT);
 
+                toast1.setGravity(Gravity.CENTER,0,0);
 
-
-    private int alertDialogNuevaCantidad() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
-        View miAlertDialog = LayoutInflater.from(ComprarPorLista.this).inflate(R.layout.alertdialog_producto,null);
-        final EditText etCantidad = (EditText) miAlertDialog.findViewById(R.id.editTextCantidadProducto);
-        builder.setView(miAlertDialog);
-        final AlertDialog dialog = builder.create();
-
-
-
-        Button buttonAceptarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogProductoAceptar);
-
-        buttonAceptarAlertProducto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (etCantidad.getText().toString().isEmpty()){
-                    Toast.makeText(ComprarPorLista.this, "Ingrese una cantidad valida", Toast.LENGTH_SHORT).show();
-                }else{
-
-                    final int auxiliar = 2;
-                    dialog.dismiss();
+                toast1.show();
+            }else if (text.matches("[0-9]")){
+                temperaturaStringBuilder.append(text.indexOf(0));
+                if(temperaturaStringBuilder.length() >= 2 ){
+                    temperaturaTextView.setText(temperaturaStringBuilder.toString());
+                    temperaturaStringBuilder.setLength(0);
                 }
             }
-        });
+        }
+    };
 
-        Button buttonCancelarAlertProducto = (Button) miAlertDialog.findViewById(R.id.buttonAlertDialogProductoCancelar);
-
-        buttonCancelarAlertProducto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+    @Override
+    public void onBackPressed() {
+        if(!listaProductosComprados.isEmpty()) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
+            builder.setTitle("¿Seguro que desea finalizar la compra?")
+                    .setMessage("Al finalizar la compra se le dira a que caja debe dirigirse")
+                    .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(ComprarPorLista.this, "Si presiona OK, se cerrara la compra y volvera al inicio.", Toast.LENGTH_LONG).show();
+                            Random random = new Random();
+                            AlertDialog.Builder builderFinalizarCompra = new AlertDialog.Builder(ComprarPorLista.this);
+                            builderFinalizarCompra.setTitle("Compra Finalizada")
+                                    .setMessage("Monto total acumulado $ " + montoParcial.getText() + "\nDirigase a la caja Nº " + (random.nextInt(10) + 1))
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            MainActivity.myAppDatabase.myDao().eliminarLista(nombreListaRecibido);
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
+                            alertDialogFinalizarCompra.setCancelable(false);
+                            alertDialogFinalizarCompra.setCanceledOnTouchOutside(false);
+                            alertDialogFinalizarCompra.show();
+                        }
+                    });
+            builder.show();
+        }else{
+            super.onBackPressed();
+        }
     }
-    */
 }

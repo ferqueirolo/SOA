@@ -13,7 +13,10 @@ import com.example.changosmart.MainActivity;
 import com.example.changosmart.R;
 import com.example.changosmart.listasCompras.detalleListas.DetalleLista;
 
+import java.util.Objects;
+
 import BD.MisListasCompraTabla;
+import BT.Bluetooth;
 
 public class CrearLista extends AppCompatActivity {
     private EditText etNombreLista,
@@ -21,10 +24,14 @@ public class CrearLista extends AppCompatActivity {
     private Button buttonCrearListaVacia,
                     buttonCrearListaConProductos;
 
+    private Bluetooth bluetoothInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_lista);
+
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstanceBack");
 
         etNombreLista = this.findViewById(R.id.editTextNombreLista);
         etSupermercado = this.findViewById(R.id.editTextSupermercado);
@@ -38,6 +45,7 @@ public class CrearLista extends AppCompatActivity {
                 if(crearNuevaLista(view)) {
                     Intent intentMisListas = new Intent(view.getContext(), MisListas.class);
                     intentMisListas.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    intentMisListas.putExtra("btInstance", bluetoothInstance);
                     startActivity(intentMisListas);
 
                     // Eliminamos la actividad actual para que no quede viva
@@ -55,6 +63,7 @@ public class CrearLista extends AppCompatActivity {
                 if (crearNuevaLista(view)) {
                     Intent intentDetalleLista = new Intent(view.getContext(), DetalleLista.class);
                     intentDetalleLista.putExtra("NOMBRE_LISTA",etNombreLista.getText().toString());
+                    intentDetalleLista.putExtra("btInstance", bluetoothInstance);
                     startActivity(intentDetalleLista);
                     finish();
                 }

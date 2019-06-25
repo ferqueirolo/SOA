@@ -2,16 +2,20 @@ package com.example.changosmart.compras.express;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.support.v4.content.LocalBroadcastManager;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.Gravity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,22 +31,36 @@ import com.example.changosmart.R;
 import com.example.changosmart.chango.Chango;
 import com.example.changosmart.productos.Producto;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Objects;
 
-import BD.ShakeDetector;
+
+import BT.Bluetooth;
+import BT.BluetoothConnectionService;
+
+import static java.lang.StrictMath.abs;
 
 public class AnadirProductoExpress extends AppCompatActivity {
     public static final int REQUEST_CODE_QR = 1010;
+
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private ShakeDetector mShakeDetector;
     private MiAdaptadorListaProductosExpress adaptator;
-    private static ArrayList<Producto> listaProductos = new ArrayList<Producto>();
+    private static ArrayList<Producto> listaProductos;
     private TextView precioParcial;
+    private int cantIngresar;
 
+    private Bluetooth bluetoothInstance;
+
+    private BluetoothConnectionService bluetoothConnection;
+
+    private float mAccel; // acceleration apart from gravity
+    private float mAccelCurrent; // current acceleration including gravity
+    private float mAccelLast; // last acceleration including gravity
+
+    private float prevX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,36 +69,41 @@ public class AnadirProductoExpress extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
-        Producto prod = null;
-        String valor;
-        precioParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
+        SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor myAccelerometerSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        //Si lo obtenido es diferente de null lo voy a buscar a la base de productos para obtener el producto
-        if( getIntent().getExtras() !=  null){
-            valor = getIntent().getExtras().getString("nombreProducto");
-            //Toast.makeText(this,"CODIGO LEIDO : " + valor, Toast.LENGTH_SHORT);
-            prod = MainActivity.myAppDatabase.myDao().findByProductoExpress( valor );
-            //Verifico que el producto no esté en la lista
-            int flag = 0;
-            Iterator<Producto> iteratorProducto = listaProductos.iterator();
-            while(iteratorProducto.hasNext()) {
-                Producto productoActual = iteratorProducto.next();
-                if ( prod.getNombre().equals(productoActual.getNombre())){
-                    flag = 1;
-                }
-            }
+        prevX = 0;
 
-            if ( flag == 1 ) {
-                //Muestro mensaje de que el producto ya existe
-                Toast.makeText(this,"Ese producto ya está agregado a la lista.",Toast.LENGTH_SHORT).show();
-            } else {
-                //Agrego el producto a la lista
-                listaProductos.add( prod );
+        //Se instancia el bluetooth en base a la conexión actual
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
+
+        //Se verifica que se tenga una conexión activa de bluetooth.
+        if (bluetoothInstance != null){
+            //Se inicia el socket del bt para escuchar mensajes del arduino.
+            bluetoothConnection = new BluetoothConnectionService(getApplicationContext());
+            if (bluetoothInstance.getPairDevice() != null){
+                bluetoothConnection.startClient( bluetoothInstance.getPairDevice(), bluetoothConnection.getDeviceUUID());
+                //Registro el evento del broadcast para detectar el provider que genera la lectura de un dato enviado por el arduino (BluetoothServiceConnection)
+                LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, new IntentFilter("IncomingMessage"));
+            }else {
+                //Se informa al usuario que debe emparejarse con un dispositivo.
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor..." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
             }
         }
 
-
+        //Solo si se detecta sensor.
+        if (myAccelerometerSensor != null) {
+           mySensorManager.registerListener(accelerometerSensorEventListener,myAccelerometerSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        
+		final ListView listaProductosView = (ListView) findViewById(R.id.listViewProductosExpress);
+        listaProductos = new ArrayList<Producto>();
+        precioParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
         //Le seteo el total al label de la vista.
         precioParcial.setText(String.valueOf(0));
 
@@ -193,6 +216,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                 }
         );
 
+
         Button finalizarCompraButton = (Button) findViewById(R.id.finalizarCompraButton);
 
         finalizarCompraButton.setOnClickListener(new View.OnClickListener() {
@@ -253,9 +277,20 @@ public class AnadirProductoExpress extends AppCompatActivity {
         qrFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
-                // se abre la vista de la camara para escanear el código qr y agregar el producto.
-                startActivityForResult(openQr, REQUEST_CODE_QR);
+                if (bluetoothInstance.getPairDevice() != null) {
+                    Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                    openQr.putExtra("btInstance", bluetoothInstance);
+                    // se abre la vista de la camara para escanear el código qr y agregar el producto.
+                    startActivityForResult(openQr, REQUEST_CODE_QR);
+                } else {
+                    //Se informa al usuario que debe emparejarse con un dispositivo.
+                    Toast toast1 =
+                            Toast.makeText(getApplicationContext(), "No estás conectado a ningún dispositivo. Conectate vía bluetooth por favor...", Toast.LENGTH_SHORT);
+
+                    toast1.setGravity(Gravity.CENTER, 0, 0);
+
+                    toast1.show();
+                }
             }
         });
 
@@ -264,12 +299,67 @@ public class AnadirProductoExpress extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent openChango = new Intent(AnadirProductoExpress.this, Chango.class);
+                openChango.putExtra("btInstance", bluetoothInstance);
                 // se abre la vista de la camara para escanear el código qr y agregar el producto.
                 startActivity(openChango);
             }
         });
     }
 
+    BroadcastReceiver myReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Acá se recibe el mensaje del arduino y se evalua si es In o Out
+            String text = intent.getStringExtra("theMessage");
+
+            if (text.equals("E")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Ingresó un producto al chango." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+                cantIngresar--;
+                toast1.show();
+            }else if (text.equals("O")){
+                Toast toast1 =
+                        Toast.makeText(getApplicationContext(), "Salió un producto del chango." , Toast.LENGTH_SHORT);
+
+                toast1.setGravity(Gravity.CENTER,0,0);
+
+                toast1.show();
+            }
+        }
+    };
+
+
+    SensorEventListener accelerometerSensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+
+                mAccelLast = mAccelCurrent;
+                mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+                float delta = mAccelCurrent - mAccelLast;
+                mAccel = mAccel * 0.9f + delta; // perform low-cut filter
+
+                if (mAccel > 15 && abs(abs(x)-abs(prevX))>=20 ) {
+                    prevX=x;
+                    Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
+                    openQr.putExtra("btInstance", bluetoothInstance);
+                    startActivity(openQr);
+                    finish();
+                }
+            }
+        }
+    };
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -329,6 +419,14 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                     dialogIngresarProd.setCancelable(false);
                                     dialogIngresarProd.setCanceledOnTouchOutside(false);
                                     dialogIngresarProd.show();
+                                    cantIngresar = cantidadNueva;
+                                    Thread hilo = new Thread(){
+                                        public void run(){
+                                            while(cantIngresar > 0){}
+                                            dialog.dismiss();
+                                        }
+                                    };
+                                    hilo.start();
                                 }
                             }
                         });
@@ -345,10 +443,10 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     }else{
                         Toast.makeText(this, "Este producto no se encuentra registrado en el sistema.", Toast.LENGTH_SHORT).show();
                     }
-
                 break;
                 default:
                     Intent refreshActivity = new Intent(this, AnadirProductoExpress.class);
+                    refreshActivity.putExtra("btInstance", bluetoothInstance);
                     startActivity(refreshActivity);
                     this.finish();
             }

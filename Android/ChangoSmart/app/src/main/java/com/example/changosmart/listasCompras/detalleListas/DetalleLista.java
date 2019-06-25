@@ -1,10 +1,7 @@
 package com.example.changosmart.listasCompras.detalleListas;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +10,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,8 +20,9 @@ import com.example.changosmart.R;
 import com.example.changosmart.productos.TodosProductos;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-import BD.ShakeDetector;
+import BT.Bluetooth;
 
 public class DetalleLista extends AppCompatActivity {
     private ArrayList<LineaCompra> detalleLista;
@@ -33,10 +30,7 @@ public class DetalleLista extends AppCompatActivity {
     private String nombreListaRecibido;
     private ListView listaProductosView;
 
-    private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private ShakeDetector mShakeDetector;
-
+    private Bluetooth bluetoothInstance;
 
     public static MiAdaptadorDetalleLista miAdaptadorDetalleLista;
 
@@ -55,6 +49,8 @@ public class DetalleLista extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
         // Cargo la lista de los productos
         //Se castea porque retorna una clase List
 
@@ -74,6 +70,7 @@ public class DetalleLista extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentProductos = new Intent(v.getContext(), TodosProductos.class);
                 intentProductos.putExtra("NOMBRE_LISTA", nombreListaRecibido);
+                intentProductos.putExtra("btInstance", bluetoothInstance);
                 startActivity(intentProductos);
             }
         });
@@ -129,22 +126,6 @@ public class DetalleLista extends AppCompatActivity {
 
 
 
-        //Activo sensor shake
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mShakeDetector = new ShakeDetector();
-        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                /*
-                 * The following method, "handleShakeEvent(count):" is a stub //
-                 * method you would use to setup whatever you want done once the
-                 * device has been shook.
-                 */
-//                ShakeDetector.handleShakeEvent();
-            }
-        });
         filter1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

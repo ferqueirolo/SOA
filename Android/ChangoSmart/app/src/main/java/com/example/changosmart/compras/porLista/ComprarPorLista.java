@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-
 import BD.MyAppDatabase;
+import java.util.Objects;
+import BT.Bluetooth;
+
 
 public class ComprarPorLista extends AppCompatActivity{
     public static final int REQUEST_CODE_QR = 1010;
@@ -44,28 +46,31 @@ public class ComprarPorLista extends AppCompatActivity{
     private ListView listViewProductosAComprar,
                      listViewProductosComprados;
 
+    private Bluetooth bluetoothInstance;
+
     private MiAdaptadorDetalleLista miAdaptadorProdAComprar;
     private MiAdaptadorListaProductosExpress miAdaptadorProdComprados;
     private TextView montoParcial;
-    private int cantidadComprar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundleRecibido = this.getIntent().getExtras();
         // SE DEBE RECIBIR EN EL INTENT EL NOMBRE DE LA LISTA
-        nombreListaRecibido = (String) bundleRecibido.get("NOMBRE_LISTA");
+        nombreListaRecibido = (String) Objects.requireNonNull(bundleRecibido).get("NOMBRE_LISTA");
         setContentView(R.layout.activity_comprar_por_lista);
 
         montoParcial = (TextView) findViewById(R.id.textViewCompraListaTotalParcial);
         montoParcial.setText("0");
+
+        bluetoothInstance = Objects.requireNonNull(getIntent().getExtras()).getParcelable("btInstance");
 
         // Seteo los LISTVIEW
         listViewProductosAComprar   = (ListView) findViewById(R.id.listViewAComprarCompraLista);
         listViewProductosComprados  = (ListView) findViewById(R.id.listViewCompradosCompraLista);
 
         // Completo con los productos de la lista ya creada
-        listaProductosAcomprar = (ArrayList) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
+        listaProductosAcomprar = (ArrayList<LineaCompra>) MainActivity.myAppDatabase.myDao().getDetalleLista(nombreListaRecibido);
         // Inicializo la lista vacia
         listaProductosComprados = new ArrayList<Producto>();
 
@@ -181,6 +186,7 @@ public class ComprarPorLista extends AppCompatActivity{
             public void onClick(View view) {
                 Intent openQr = new Intent(ComprarPorLista.this, QR.class);
                 // se abre la vista de la camara para escanear el código qr y agregar el producto.
+                openQr.putExtra("btInstance", bluetoothInstance);
                 startActivityForResult(openQr, REQUEST_CODE_QR);
             }
         });
@@ -191,6 +197,7 @@ public class ComprarPorLista extends AppCompatActivity{
             public void onClick(View view) {
                 Intent openChango = new Intent(ComprarPorLista.this, Chango.class);
                 // se abre la vista de la camara para escanear el código qr y agregar el producto.
+                openChango.putExtra("btInstance", bluetoothInstance);
                 startActivity(openChango);
             }
         });
@@ -200,32 +207,28 @@ public class ComprarPorLista extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            switch (requestCode) {
-                case REQUEST_CODE_QR:
-                    // A REALIZAR
-                    // CREAR UN ASYNCTASK QUE SI RECIBE UN 1 DE LA BARRERA DEL ARDUINO HAGA UN DISMISS DEL DIALOG Y TE AGREGUE EL PRODUCTO
+            if (requestCode == REQUEST_CODE_QR) {// A REALIZAR
+                // CREAR UN ASYNCTASK QUE SI RECIBE UN 1 DE LA BARRERA DEL ARDUINO HAGA UN DISMISS DEL DIALOG Y TE AGREGUE EL PRODUCTO
 
-                    // Si pudo ingresar el nuevo producto tengo que esperar a las barreras
-                    if ( nuevoProductoAIngresar(data) ) {
+                // Si pudo ingresar el nuevo producto tengo que esperar a las barreras
+                if (nuevoProductoAIngresar(data)) {
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ComprarPorLista.this);
 
-                        builder.setTitle("Ingrese el producto al chango")
-                                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                    builder.setTitle("Ingrese el producto al chango")
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                                    }
-                                });
-                        builder.show();
-                    }
-
-
-                    break;
-                default:
-                    Intent refreshActivity = new Intent(this, ComprarPorLista.class);
-                    startActivity(refreshActivity);
-                    this.finish();
+                                }
+                            });
+                    builder.show();
+                }
+            } else {
+                Intent refreshActivity = new Intent(this, ComprarPorLista.class);
+                refreshActivity.putExtra("btInstance", bluetoothInstance);
+                startActivity(refreshActivity);
+                this.finish();
             }
         }
     }

@@ -7,22 +7,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".compras.porLista.ComprarPorLista">
 
-    <Button
-        android:id="@+id/finalizarCompraButton"
-        android:layout_width="111dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/button_bg"
-        android:text="Finalizar Compra"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/moveChartCompraExpress"
-        app:layout_constraintStart_toEndOf="@+id/qr"
-        app:layout_constraintTop_toBottomOf="@+id/listViewCompradosCompraLista"
-        tools:text="Finalizar Compra" />
-
     <ListView
         android:id="@+id/listViewAComprarCompraLista"
         android:layout_width="392dp"
@@ -167,20 +151,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listViewCompradosCompraLista"
         app:srcCompat="@drawable/steering" />
-
-    <TextView
-        android:id="@+id/textViewTemperatura"
-        android:layout_width="87dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Temperatura"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewListaLineaComprarLista"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewListaLineaComprarLista"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCompraListaTotalParcial" />
 
 
 </android.support.constraint.ConstraintLayout>

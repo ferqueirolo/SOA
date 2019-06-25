@@ -33,9 +33,7 @@ import com.example.changosmart.productos.Producto;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Objects;
-
 
 import BT.Bluetooth;
 import BT.BluetoothConnectionService;
@@ -179,7 +177,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
         limpiarLista.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
-                    public void onClick(final View view) {
+                    public void onClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
 
                         builder.setTitle("¿Desea vaciar la lista de productos?")
@@ -190,19 +188,6 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                         totalParcial.setText(String.valueOf(0));
                                         listaProductos.clear();
                                         adaptator.notifyDataSetChanged();
-                                        AlertDialog.Builder builderLiberar = new AlertDialog.Builder(view.getContext())
-                                                .setTitle("Vaciar el chango")
-                                                .setMessage("Quite los productos del chango y luego presione aceptar")
-                                                .setCancelable(false)
-                                                .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                        AlertDialog quitarProductosDialog = builderLiberar.create();
-                                        quitarProductosDialog.setCanceledOnTouchOutside(false);
-                                        quitarProductosDialog.show();
                                     }
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -215,64 +200,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                     }
                 }
         );
-
-
-        Button finalizarCompraButton = (Button) findViewById(R.id.finalizarCompraButton);
-
-        finalizarCompraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-                builder.setTitle("¿Seguro que desea finalizar la compra?")
-                        .setMessage("Al finalizar la compra se le dira a que caja debe dirigirse")
-                        .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Random random = new Random();
-                                AlertDialog.Builder builderFinalizarCompra = new AlertDialog.Builder(v.getContext());
-                                builderFinalizarCompra.setTitle("Compra Finalizada")
-                                        .setMessage("Monto total acumulado $ "+ precioParcial.getText() +"\nDirigase a la caja Nº "+ (random.nextInt(10)+1))
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                TextView totalParcial = (TextView) findViewById(R.id.textViewExpressTotalParcial);
-                                                totalParcial.setText(String.valueOf(0));
-                                                listaProductos.clear();
-                                                adaptator.notifyDataSetChanged();
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
-                                alertDialogFinalizarCompra.setCancelable(false);
-                                alertDialogFinalizarCompra.setCanceledOnTouchOutside(false);
-                                alertDialogFinalizarCompra.show();
-                            }
-                        });
-                builder.show();
-            }
-        });
-
-        //Activo sensor shake
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mShakeDetector = new ShakeDetector();
-        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
-            @Override
-            public void onShake(int count) {
-                Intent openQr = new Intent(AnadirProductoExpress.this, QR.class);
-                startActivityForResult(openQr, 1);
-                finish();
-            }
-        });
-
+     
         FloatingActionButton qrFab = findViewById(R.id.qr);
         qrFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -408,13 +336,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(AnadirProductoExpress.this);
 
-                                    builder.setTitle("Ingrese el producto al chango")
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
+                                    builder.setTitle("Ingrese el producto al chango");
                                     AlertDialog dialogIngresarProd = builder.create();
                                     dialogIngresarProd.setCancelable(false);
                                     dialogIngresarProd.setCanceledOnTouchOutside(false);

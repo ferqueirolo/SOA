@@ -112,18 +112,9 @@ public class MisListas extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Devuelve interface LIST, por eso lo casteo a ArrayList
-        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
-        adaptador.setListaProductos(misListasCompras);
-        adaptador.notifyDataSetChanged();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        misListasCompras = (ArrayList) MainActivity.myAppDatabase.myDao().getListaCompras();
-        adaptador.setListaProductos(misListasCompras);
-        adaptador.notifyDataSetChanged();
+        // Devuelve interface LIST, por eso lo casteo a ArrayList
+        misListasCompras = (ArrayList<ListaCompra>) MainActivity.myAppDatabase.myDao().getListaCompras();
     }
 
     @Override

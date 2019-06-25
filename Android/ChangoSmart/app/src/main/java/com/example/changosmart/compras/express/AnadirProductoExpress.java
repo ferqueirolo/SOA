@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.Gravity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -308,7 +309,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             //Acá se recibe el mensaje del arduino y se evalua si es In o Out
             String text = intent.getStringExtra("theMessage");
-
+            Log.e("Entrada", text );
             if (text.equals("E")){
                 Toast toast1 =
                         Toast.makeText(getApplicationContext(), "Ingresó un producto al chango." , Toast.LENGTH_SHORT);
@@ -328,7 +329,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
 
 
             }else if (text.matches("[0-9]")){
-                temperaturaStringBuilder.append(text.indexOf(0));
+                temperaturaStringBuilder.append(text);
                 if(temperaturaStringBuilder.length() >= 2 ){
                     temperaturaTextView.setText(temperaturaStringBuilder.toString());
                     temperaturaStringBuilder.setLength(0);
@@ -455,11 +456,13 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                 pos++;
                             }
                         }
-                        if (listaProductos.get(pos).getNombre().equals(nombreProducto)) {
-                            Toast.makeText(AnadirProductoExpress.this, "Se quitara el producto " + nombreProducto, Toast.LENGTH_SHORT).show();
-                            precioParcial.setText(String.valueOf(Integer.valueOf(precioParcial.getText().toString()) - listaProductos.get(pos).getTotalPorProducto()));
-                            listaProductos.remove(pos);
-                            adaptator.notifyDataSetChanged();
+                        if (! listaProductos.isEmpty() ) {
+                            if (listaProductos.get(pos).getNombre().equals(nombreProducto)) {
+                                Toast.makeText(AnadirProductoExpress.this, "Se quitara el producto " + nombreProducto, Toast.LENGTH_SHORT).show();
+                                precioParcial.setText(String.valueOf(Integer.valueOf(precioParcial.getText().toString()) - listaProductos.get(pos).getTotalPorProducto()));
+                                listaProductos.remove(pos);
+                                adaptator.notifyDataSetChanged();
+                            }
                         }
                     }
                 break;

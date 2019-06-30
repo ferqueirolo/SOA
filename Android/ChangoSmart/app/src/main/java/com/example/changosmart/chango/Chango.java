@@ -54,6 +54,7 @@ public class Chango extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("[onCreate:Chango]", "Estoy CREANDO...");
         setContentView(R.layout.activity_mover_chango);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -156,7 +157,6 @@ public class Chango extends AppCompatActivity {
                 enviarInformacionMovimiento(establecerComandoMovimientoServo);
             }
         });
-
     }
 
     BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -293,24 +293,34 @@ public class Chango extends AppCompatActivity {
     };
 
     @Override
+    public void onBackPressed() {
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
+        }catch(Exception ex){}
+        if (bluetoothInstance.getPairDevice() != null){
+            Log.e("[onBACKPRESSED:Chango]", "CANCELANDO THREAD");
+            bluetoothConnection.cancel();
+        }
+        finish();
+    }
+
+    @Override
     protected void onPause() {
+        Log.e("[onPause:Chango]", "Estoy Paused...");
         super.onPause();
-        this.finish();
+        //this.finish();
     }
 
     @Override
     protected void onStop() {
+        Log.e("[onStop:Chango]", "Estoy Stopped...");
         super.onStop();
-        this.finish();
+        //this.finish();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d("", "[OnDestoy]: Dejo de verificar por los receivers");
-        try {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
-        }catch(Exception ex){}
-        bluetoothConnection.cancel();
+        Log.e("[onDestroy:Chango]", "Destroy");
         super.onDestroy();
     }
 

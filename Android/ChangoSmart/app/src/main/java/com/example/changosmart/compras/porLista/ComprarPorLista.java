@@ -426,7 +426,10 @@ public class ComprarPorLista extends AppCompatActivity{
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
         }catch(Exception ex){}
-        bluetoothConnection.cancel();
+        if (bluetoothInstance.getPairDevice() != null){
+            Log.e("[onDestroy:Lista]", "CANCELANDO THREAD");
+            bluetoothConnection.cancel();
+        }
         super.onDestroy();
     }
     

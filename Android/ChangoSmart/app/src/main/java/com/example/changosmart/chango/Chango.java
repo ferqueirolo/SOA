@@ -308,8 +308,9 @@ public class Chango extends AppCompatActivity {
     protected void onDestroy() {
         Log.d("", "[OnDestoy]: Dejo de verificar por los receivers");
         try {
-            unregisterReceiver(myReceiver);
-        }catch(Exception ex){ }
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
+        }catch(Exception ex){}
+        bluetoothConnection.cancel();
         super.onDestroy();
     }
 

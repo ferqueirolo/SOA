@@ -422,11 +422,12 @@ public class ComprarPorLista extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         Log.d("", "[OnDestoy]: Dejo de verificar por los receivers");
         try {
-            unregisterReceiver(myReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
         }catch(Exception ex){}
+        bluetoothConnection.cancel();
+        super.onDestroy();
     }
     
     @Override

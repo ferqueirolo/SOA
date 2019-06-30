@@ -574,8 +574,9 @@ public class AnadirProductoExpress extends AppCompatActivity {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(this.myReceiver);
         }catch(Exception ex){
             Log.e("Error unregister", ex.getMessage());
-            Log.e("Error unregister", "Error al desuscbiribrseaseasd");
+            Log.e("Error unregister", "Error al unregister");
         }
+        bluetoothConnection.cancel();
         super.onDestroy();
     }
 }

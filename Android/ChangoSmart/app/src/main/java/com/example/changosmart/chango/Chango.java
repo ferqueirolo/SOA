@@ -51,6 +51,10 @@ public class Chango extends AppCompatActivity {
 
     private float prevLuz;
 
+    private SensorManager mySensorManager;
+    private Sensor myProximitySensor;
+    private Sensor myLightSensor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +66,12 @@ public class Chango extends AppCompatActivity {
         //Instancias de los sensores
         //Se le asigna 15 por que se da por entendido que se va a probar en lugares con luz, de igual forma se valida debajo.
         prevLuz = 15;
-        SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        /*SensorManager mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         Sensor myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        Sensor myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        Sensor myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);*/
+        mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        myProximitySensor = mySensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        myLightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         if (myProximitySensor != null) {
             mySensorManager.registerListener(proximitySensorEventListener,myProximitySensor,SensorManager.SENSOR_DELAY_NORMAL);
@@ -215,8 +222,6 @@ public class Chango extends AppCompatActivity {
             Toast toast1 =
                     Toast.makeText(getApplicationContext(), "Caracter a enviar: " + direccionMovimiento, Toast.LENGTH_SHORT);
 
-            toast1.setGravity(Gravity.CENTER,0,0);
-
             toast1.show();
             byte[] commandInBytes = String.valueOf(direccionMovimiento).getBytes(Charset.defaultCharset());
 
@@ -234,35 +239,37 @@ public class Chango extends AppCompatActivity {
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
             if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                if (event.values[0] == 0) {
-                    //El sensor detecta algo próximo
-                    //Envía un mensaje al arduino para que frene.
-                    establecerComandoMovimiento = 'S';
-                    enviarInformacionMovimiento(establecerComandoMovimiento);
-                    establecerComandoMovimientoServo = 'F';
-                    enviarInformacionMovimiento(establecerComandoMovimientoServo);
+                if (establecerComandoMovimiento != 'S') {
+                    if (event.values[0] == 0) {
+                        //El sensor detecta algo próximo
+                        //Envía un mensaje al arduino para que frene.
+                        establecerComandoMovimiento = 'S';
+                        enviarInformacionMovimiento(establecerComandoMovimiento);
+                        establecerComandoMovimientoServo = 'F';
+                        enviarInformacionMovimiento(establecerComandoMovimientoServo);
 
-                    Toast toast1 =
-                            Toast.makeText(getApplicationContext(), "Sensor proximidad celular activado.", Toast.LENGTH_SHORT);
+                        Toast toast1 =
+                                Toast.makeText(getApplicationContext(), "Sensor proximidad celular activado.", Toast.LENGTH_SHORT);
 
-                    toast1.setGravity(Gravity.CENTER,0,0);
+                        toast1.setGravity(Gravity.CENTER,0,0);
 
-                    toast1.show();
+                        toast1.show();
 
-                } else {
-                    buttonUp.setEnabled(true);
-                    buttonUp.setBackgroundColor(getResources().getColor(R.color.mainTitlesColor));
+                    } else {
+                        buttonUp.setEnabled(true);
+                        buttonUp.setBackgroundColor(getResources().getColor(R.color.mainTitlesColor));
 
-                    Toast toast1 =
-                            Toast.makeText(getApplicationContext(), "Sensor proximidad celular desactivado", Toast.LENGTH_SHORT);
+                        Toast toast1 =
+                                Toast.makeText(getApplicationContext(), "Sensor proximidad celular desactivado", Toast.LENGTH_SHORT);
 
-                    toast1.setGravity(Gravity.CENTER,0,0);
+                        toast1.setGravity(Gravity.CENTER,0,0);
 
-                    toast1.show();
+                        toast1.show();
+                    }
                 }
             }
         }
-    };
+        };
 
     SensorEventListener lightSensorEventListener = new SensorEventListener() {
         @Override
@@ -275,7 +282,7 @@ public class Chango extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Se le agrega una verificación por un valor previo del sensor, por que sino cambia constantemente.
             if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-                if (event.values[0] < 10 && prevLuz > 10) {
+                if (event.values[0] < 10 && prevLuz >= 10) {
                     //El sensor no detecta luz y estaba apagada la luz del carrito
                     prevLuz=event.values[0];
                     //Encender luz carrito
@@ -285,6 +292,7 @@ public class Chango extends AppCompatActivity {
                     if (event.values[0] >= 10 && prevLuz < 10) {
                         //El sensor detecta luz y estaba encedida la luz del carrito
                         prevLuz=event.values[0];
+                        //prevLuz = 15;
                         //Apagar luz carrito
                         establecerComandoLuz = 'L';
                         enviarInformacionMovimiento(establecerComandoLuz);
@@ -303,6 +311,8 @@ public class Chango extends AppCompatActivity {
             Log.e("[onBACKPRESSED:Chango]", "CANCELANDO THREAD");
             bluetoothConnection.cancel();
         }
+        mySensorManager.unregisterListener(lightSensorEventListener);
+        mySensorManager.unregisterListener(proximitySensorEventListener);
         finish();
     }
 
@@ -310,14 +320,12 @@ public class Chango extends AppCompatActivity {
     protected void onPause() {
         Log.e("[onPause:Chango]", "Estoy Paused...");
         super.onPause();
-        //this.finish();
     }
 
     @Override
     protected void onStop() {
         Log.e("[onStop:Chango]", "Estoy Stopped...");
         super.onStop();
-        //this.finish();
     }
 
     @Override

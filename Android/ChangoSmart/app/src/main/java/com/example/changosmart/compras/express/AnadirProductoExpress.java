@@ -353,7 +353,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                         Log.e("[tempActual]", temperaturaStringBuilder.toString());
                     }
                     boolean congeladoSi = false;
-                    if (tempActual >= 28){
+                    if (tempActual >= 25){
                         for(Producto prod : listaProductos){
                             if(prod.getCategoria().equals("Congelado")) {
                                 congeladoSi =  true;

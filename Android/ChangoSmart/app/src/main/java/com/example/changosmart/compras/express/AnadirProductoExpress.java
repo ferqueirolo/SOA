@@ -288,6 +288,7 @@ public class AnadirProductoExpress extends AppCompatActivity {
                                                 listaProductos.clear();
                                                 adaptator.notifyDataSetChanged();
                                                 dialog.dismiss();
+                                                finish();
                                             }
                                         });
                                 AlertDialog alertDialogFinalizarCompra = builderFinalizarCompra.create();
@@ -345,6 +346,31 @@ public class AnadirProductoExpress extends AppCompatActivity {
             }else if (text.matches("[0-9]")){
                 temperaturaStringBuilder.append(text);
                 if(temperaturaStringBuilder.length() >= 2 ){
+                    // INICIO VERIFICA SI LA TEMP EXCEDE TEMP DE FRIO/CONGELADO
+                    int tempActual = 0;
+                    if (! temperaturaStringBuilder.toString().equals("")) {
+                        tempActual = Integer.valueOf(temperaturaStringBuilder.toString());
+                        Log.e("[tempActual]", temperaturaStringBuilder.toString());
+                    }
+                    boolean congeladoSi = false;
+                    if (tempActual >= 28){
+                        for(Producto prod : listaProductos){
+                            if(prod.getCategoria().equals("Congelado")) {
+                                congeladoSi =  true;
+                                break;
+                            }
+                        }
+                        if (congeladoSi == true) {
+                            Toast toast1 =
+                                    Toast.makeText(getApplicationContext(), "Ingreso un producto que necesita freezer/heladera, puede que se rompa la cadena de frío", Toast.LENGTH_SHORT);
+
+                            toast1.setGravity(Gravity.CENTER, 0, 0);
+
+                            toast1.show();
+                        }
+                    }
+                    // FIN
+                    temperaturaStringBuilder.append("ºC");
                     temperaturaTextView.setText(temperaturaStringBuilder.toString());
                     temperaturaStringBuilder.setLength(0);
                 }

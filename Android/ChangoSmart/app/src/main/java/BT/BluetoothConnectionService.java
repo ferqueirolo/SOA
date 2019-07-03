@@ -238,10 +238,10 @@ public class BluetoothConnectionService {
                     Intent incomingMessageIntent = new Intent("IncomingMessage");
                     incomingMessageIntent.putExtra("theMessage", incomingMessage);
                     LocalBroadcastManager.getInstance(myContext).sendBroadcast(incomingMessageIntent);
-
                 } catch (Exception e) {
                     Log.e(TAG, "READ: Error al recibir el mensaje. " + e.getMessage() );
-                    //Es importante cortar con el break el ciclo.
+
+              //Es importante cortar con el break el ciclo.
                     break;
                 }
             }

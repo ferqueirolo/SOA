@@ -472,7 +472,7 @@ public class ComprarPorLista extends AppCompatActivity{
                         Log.e("[tempActual]", temperaturaStringBuilder.toString());
                     }
                     boolean congeladoSi = false;
-                    if (tempActual >= 28){
+                    if (tempActual >= 18){
                         for(Producto prod : listaProductosComprados){
                             if(prod.getCategoria().equals("Congelado")) {
                                 congeladoSi =  true;
@@ -481,7 +481,7 @@ public class ComprarPorLista extends AppCompatActivity{
                         }
                         if (congeladoSi == true) {
                             Toast toast1 =
-                                    Toast.makeText(getApplicationContext(), "Ingreso un producto que necesita freezer/heladera, puede que se rompa la cadena de frío", Toast.LENGTH_SHORT);
+                                    Toast.makeText(getApplicationContext(), "Ingreso un producto que necesita freezer/heladera, puede que se rompa la cadena de frío", Toast.LENGTH_LONG);
 
                             toast1.setGravity(Gravity.CENTER, 0, 0);
 
